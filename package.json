@@ -1,33 +1,20 @@
 {
   "name": "impersonated-fetch",
-  "version": "0.0.0",
+  "version": "0.0-development",
   "type": "module",
   "packageManager": "pnpm@11.4.0",
   "description": "Node.js fetch port scaffold for requests_go impersonation backend",
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs"
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist",
-    "requests-go/requests_go/tls_client/dependencies/*.so",
-    "requests-go/requests_go/tls_client/dependencies/*.dll",
-    "requests-go/requests_go/tls_client/dependencies/*.dylib"
-  ],
   "scripts": {
     "build": "tsdown",
-    "package:check": "npm run build && vitest run test/package/package-check.test.mjs",
-    "native-assets:check": "npm run build && vitest run test/package/package-check.test.mjs",
-    "test": "npm run build && vitest run test/client/client-session.test.ts test/errors/errors-abort.test.ts test/fetch/facade.test.ts test/fingerprint/fixture.test.ts test/impersonation/serialize.test.ts test/impersonation/types.test.ts test/native/abi.test.ts test/native/assets.test.ts test/native/transport.test.ts test/transport/capabilities.test.ts",
-    "test:watch": "vitest test/client/client-session.test.ts test/errors/errors-abort.test.ts test/fetch/facade.test.ts test/fingerprint/fixture.test.ts test/impersonation/serialize.test.ts test/impersonation/types.test.ts test/native/abi.test.ts test/native/assets.test.ts test/native/transport.test.ts test/transport/capabilities.test.ts",
-    "test:fingerprint": "npm run build && vitest run test/fingerprint/smoke.test.ts -t fingerprint-smoke",
-    "test:native-assets": "vitest run test/native/assets.test.ts",
-    "test:package": "npm run build && vitest run test/package/package-check.test.mjs",
+    "package:check": "pnpm run build && vitest run test/package/package-check.test.mjs",
+    "native-assets:check": "pnpm run build && vitest run test/package/package-check.test.mjs",
+    "test": "pnpm run build && vitest run test/client/client-session.test.ts test/errors/errors-abort.test.ts test/fetch/facade.test.ts test/fingerprint/fixture.test.ts test/impersonation/serialize.test.ts test/impersonation/types.test.ts test/native/abi.test.ts test/native/assets.test.ts test/native/transport.test.ts test/transport/capabilities.test.ts",
+    "test:watch": "pnpm run build && vitest test/client/client-session.test.ts test/errors/errors-abort.test.ts test/fetch/facade.test.ts test/fingerprint/fixture.test.ts test/impersonation/serialize.test.ts test/impersonation/types.test.ts test/native/abi.test.ts test/native/assets.test.ts test/native/transport.test.ts test/transport/capabilities.test.ts",
+    "test:fingerprint": "pnpm run build && vitest run test/fingerprint/smoke.test.ts -t fingerprint-smoke",
+    "test:native-assets": "pnpm run build && vitest run test/native/assets.test.ts",
+    "test:package": "pnpm run build && vitest run test/package/package-check.test.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:examples": "tsc -p tsconfig.examples.json --noEmit",
     "lint": "biome check .",
