@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Remove the custom `scripts/` build and validation layer in favor of tsdown, direct npm scripts, Node test files, and GitHub Actions.
+**Goal:** Remove the custom `scripts/` build and validation layer in favor of tsdown, direct npm scripts, Vitest files, and GitHub Actions.
 
-**Architecture:** tsdown owns build output in a flat `dist/` layout with `.mjs`, `.cjs`, `.d.mts`, and `.d.cts` files. Package/native validation moves into a Node test file, and examples get a real TypeScript project instead of a fake smoke script.
+**Architecture:** tsdown owns build output in a flat `dist/` layout with `.mjs`, `.cjs`, `.d.mts`, and `.d.cts` files. Package/native validation moves into a Vitest file, and examples get a real TypeScript project instead of a fake smoke script.
 
-**Tech Stack:** tsdown, TypeScript, Node built-in test runner, GitHub Actions, npm scripts.
+**Tech Stack:** tsdown, TypeScript, Vitest, GitHub Actions, npm scripts.
 
 ---
 
@@ -15,7 +15,7 @@
 **Files:**
 - Create: `tsdown.config.mjs`
 - Modify: `package.json`
-- Modify: `test/package/esm-test.mjs`
+- Modify: `test/package/package-check.test.mjs`
 - Modify: test imports under `test/**/*.ts`
 
 - [ ] **Step 1: Add tsdown config**
@@ -39,11 +39,11 @@ Replace `dist/esm/*.js` imports with `dist/*.mjs` imports.
 
 - [ ] **Step 1: Add package/native assertions**
 
-Create a Node test that validates `npm pack --dry-run --json`, required dist files, native asset pack entries, native asset checksums, ESM/CJS resolver exports, and unsupported platform errors.
+Create a Vitest test that validates `npm pack --dry-run --json`, required dist files, native asset pack entries, native asset checksums, ESM/CJS resolver exports, and unsupported platform errors.
 
 - [ ] **Step 2: Wire npm and CI**
 
-Make `package:check` and `native-assets:check` run the Node package/native validation test. Remove `ci:local`.
+Make `package:check` and `native-assets:check` run the Vitest package/native validation test. Remove `ci:local`.
 
 ### Task 3: Replace examples-smoke with real example typecheck
 

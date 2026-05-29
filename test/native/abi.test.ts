@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { describe, it } from 'node:test';
+import { describe, it } from 'vitest';
 import { nativeAbiFfiDeclarations, nativeAbiSymbolNames } from '../../src/native/abi.ts';
 import { getNativeAssetInfo } from '../../src/native/assets.ts';
 

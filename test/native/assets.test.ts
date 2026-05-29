@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { basename, relative } from 'node:path';
-import { describe, it } from 'node:test';
+import { describe, it } from 'vitest';
 
 import {
   getNativeAssetInfo,

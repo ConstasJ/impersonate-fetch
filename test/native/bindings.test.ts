@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
-import { describe, it } from 'node:test';
+import { describe, it } from 'vitest';
 
+import type { NativeAssetInfo } from '../../src/native/assets.ts';
 import {
   createNativeBindings,
   NativeBindingLoadError,
   NativeBindingNativeError,
 } from '../../src/native/bindings.ts';
-import type { NativeAssetInfo } from '../../src/native/assets.ts';
 
 const asset: NativeAssetInfo = {
   platform: 'test',

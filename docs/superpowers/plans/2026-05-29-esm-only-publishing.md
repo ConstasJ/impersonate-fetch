@@ -73,7 +73,7 @@ Expected: `npm run build` no longer emits `dist/index.cjs`.
 **Files:**
 - Modify: `test/package/package-check.test.mjs`
 - Delete: `test/package/cjs-test.js`
-- Create: `test/package/cjs-require-test.cjs`
+- Modify: `test/package/package-check.test.mjs`
 - Modify: `package.json`
 
 - [ ] **Step 1: Update packed artifact assertions**
@@ -82,7 +82,7 @@ In `test/package/package-check.test.mjs`, assert that `dist/index.mjs` and `dist
 
 - [ ] **Step 2: Add CJS rejection smoke test**
 
-Create `test/package/cjs-require-test.cjs`:
+Add the package entrypoint smoke checks to `test/package/package-check.test.mjs`:
 
 ```js
 const assert = require('node:assert/strict');
@@ -97,10 +97,10 @@ console.log('CJS package rejection test passed');
 
 - [ ] **Step 3: Update package test script**
 
-Change `test:package` to run the new rejection test and the existing ESM smoke test:
+Change `test:package` to run the Vitest package suite:
 
 ```json
-"test:package": "npm run build && node test/package/cjs-require-test.cjs && node test/package/esm-test.mjs"
+"test:package": "npm run build && vitest run test/package/package-check.test.mjs"
 ```
 
 Expected: CommonJS consumers get an unsupported-package-surface failure, and ESM import still works.
@@ -111,8 +111,7 @@ Expected: CommonJS consumers get an unsupported-package-surface failure, and ESM
 - Verify: `package.json`
 - Verify: `tsdown.config.mjs`
 - Verify: `test/package/package-check.test.mjs`
-- Verify: `test/package/cjs-require-test.cjs`
-- Verify: `test/package/esm-test.mjs`
+- Verify: `test/package/package-check.test.mjs`
 
 - [ ] **Step 1: Run static checks**
 

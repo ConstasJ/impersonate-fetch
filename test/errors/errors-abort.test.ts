@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import { describe, it } from 'vitest';
 
 import {
   AbortError,
   FetchBodyUsedError,
   fetch,
   NativeAbiUnavailableError,
+  NativeTransportBackend,
   NativeTransportError,
   TimeoutError,
   ValidationError,
@@ -17,7 +18,6 @@ import type {
   NativeStreamReadPayload,
 } from '../../src/native/abi.ts';
 import type { NativeFfiClient } from '../../src/native/ffi.ts';
-import { NativeTransportBackend } from '../../dist/index.mjs';
 import type {
   TransportBackend,
   TransportRequest,

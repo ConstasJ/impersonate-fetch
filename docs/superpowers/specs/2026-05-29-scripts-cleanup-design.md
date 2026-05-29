@@ -9,7 +9,7 @@ Reduce script sprawl without changing the public build, lint, test, package, or 
 Use the low-risk cleanup path:
 
 - Keep stable user-facing npm entries such as `build`, `test`, `typecheck`, `lint`, and `examples:smoke`.
-- Route the default test commands through Node's built-in test runner, matching the existing test files' `node:test` API and excluding native-direct/network smoke tests that require local FFI support or a shim.
+- Route the default test commands through Vitest, matching the migrated test files' `vitest` API and excluding native-direct/network smoke tests that require local FFI support or a shim.
 - Expose CI-only validation modes as named npm scripts instead of requiring CI to call `node scripts/ci-local.mjs` directly.
 - Remove the unused `scripts/test.mjs` aggregate runner because the package now exposes the stable local test set directly through npm scripts, and no project file references `scripts/test.mjs`.
 

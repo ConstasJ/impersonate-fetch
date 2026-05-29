@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { after, before, beforeEach, describe, it } from 'node:test';
+import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
 
 import { Client, fetch } from '../../dist/index.mjs';
 import { type FixtureServer, startFixtureServer } from '../fixtures/server.ts';
@@ -30,7 +30,7 @@ const fixtureCapabilities = {
 describe('fingerprint fixture suite', () => {
   let fixture: FixtureServer;
 
-  before(async () => {
+  beforeAll(async () => {
     fixture = await startFixtureServer();
   });
 
@@ -38,7 +38,7 @@ describe('fingerprint fixture suite', () => {
     fixture.reset();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await fixture.close();
   });
 

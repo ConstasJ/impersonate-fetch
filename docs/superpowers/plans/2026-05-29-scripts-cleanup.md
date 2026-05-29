@@ -52,17 +52,17 @@ Use:
 run: npm run native-assets:check
 ```
 
-### Task 3: Route tests through Node's built-in runner
+### Task 3: Route tests through Vitest
 
 **Files:**
 - Modify: `package.json`
 
 - [x] **Step 1: Replace the default test command**
 
-Use Node's `node:test` runner for the stable local test set:
+Use Vitest for the stable local test set:
 
 ```json
-"test": "npm run build && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test --test-reporter=tap test/client/client-session.test.ts test/errors/errors-abort.test.ts test/fetch/facade.test.ts test/fingerprint/fixture.test.ts test/impersonation/serialize.test.ts test/impersonation/types.test.ts test/native/abi.test.ts test/native/assets.test.ts test/native/transport.test.ts test/transport/capabilities.test.ts"
+"test": "npm run build && vitest run test/client/client-session.test.ts test/errors/errors-abort.test.ts test/fetch/facade.test.ts test/fingerprint/fixture.test.ts test/impersonation/serialize.test.ts test/impersonation/types.test.ts test/native/abi.test.ts test/native/assets.test.ts test/native/transport.test.ts test/transport/capabilities.test.ts"
 ```
 
 - [x] **Step 2: Replace the native assets test command**
@@ -70,7 +70,7 @@ Use Node's `node:test` runner for the stable local test set:
 Use:
 
 ```json
-"test:native-assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test --test-reporter=tap test/native/assets.test.ts"
+"test:native-assets": "vitest run test/native/assets.test.ts"
 ```
 
 ### Task 4: Remove unused aggregate runner

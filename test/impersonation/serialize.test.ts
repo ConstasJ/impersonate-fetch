@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { describe, it } from 'vitest';
 
 import {
   ImpersonationSerializationError,
@@ -166,11 +166,11 @@ function parseNativeJson(value: string | null | undefined): Record<string, unkno
 
 function writeEvidence(name: string, payload: unknown): void {
   mkdirSync(evidence, { recursive: true });
-  writeFileSync(resolve(evidence, name), JSON.stringify(payload, null, 2) + '\n');
+  writeFileSync(resolve(evidence, name), `${JSON.stringify(payload, null, 2)}\n`);
 }
 
 function writeUnknownOptionEvidence(error: unknown): void {
   mkdirSync(evidence, { recursive: true });
   const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-  writeFileSync(resolve(evidence, 'task-9-unknown-option.log'), message + '\n');
+  writeFileSync(resolve(evidence, 'task-9-unknown-option.log'), `${message}\n`);
 }

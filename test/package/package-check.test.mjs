@@ -2,12 +2,14 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { basename, resolve } from 'node:path';
-import { describe, it } from 'node:test';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { describe, it } from 'vitest';
 
 const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
+const requireFromHere = createRequire(import.meta.url);
 const npmPackInvocation =
   process.platform === 'win32'
     ? {
@@ -110,7 +112,7 @@ describe('package contents', () => {
       const path = `requests-go/requests_go/tls_client/dependencies/${filename}`;
       assert.equal(packagedPaths.has(path), true, `npm pack is missing ${path}`);
     }
-  });
+  }, 15_000);
 });
 
 describe('native packaged assets', () => {
@@ -154,6 +156,20 @@ describe('native packaged assets', () => {
     } finally {
       process.chdir(originalCwd);
     }
+  });
+});
+
+describe('package entrypoints', () => {
+  it('package entrypoints expose ESM exports and reject CommonJS require', async () => {
+    const packageEntry = await import(pathToFileURL(resolve(root, 'dist', 'index.mjs')).href);
+
+    assert.equal(typeof packageEntry.fetch, 'function');
+    assert.equal(typeof packageEntry.Client, 'function');
+    assert.equal(typeof packageEntry.Session, 'function');
+    assert.throws(
+      () => requireFromHere('impersonated-fetch'),
+      (error) => error && error.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    );
   });
 });
 

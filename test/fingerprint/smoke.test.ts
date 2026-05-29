@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { describe, it } from 'node:test';
+import { describe, it } from 'vitest';
 
 import {
   createNativeTransportBackend,
@@ -13,9 +13,7 @@ const endpoint = process.env.FINGERPRINT_ENDPOINT ?? 'https://tls.peet.ws/api/al
 const evidencePath = '.omo/evidence/task-11-fingerprint.json';
 
 describe('fingerprint smoke suite', () => {
-  it('fingerprint-smoke validates JA3, JA4-related fields, protocol metadata, HTTP/2 settings, and request ordering against tls.peet.ws', {
-    timeout: 45_000,
-  }, async () => {
+  it('fingerprint-smoke validates JA3, JA4-related fields, protocol metadata, HTTP/2 settings, and request ordering against tls.peet.ws', async () => {
     let response: { body: Uint8Array; status: number };
     const transport = 'impersonated-fetch';
     try {
@@ -80,7 +78,7 @@ describe('fingerprint smoke suite', () => {
     }
 
     writeEvidence({ endpoint, observed, status: 'passed', transport });
-  });
+  }, 45_000);
 });
 
 function inspectFingerprintPayload(payload: Record<string, unknown>): Record<
