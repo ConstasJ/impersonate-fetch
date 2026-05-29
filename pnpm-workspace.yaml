@@ -1,0 +1,4 @@
+allowBuilds:
+  - koffi
+minimumReleaseAgeExclude:
+  - tsdown@0.22.1

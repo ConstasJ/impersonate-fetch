@@ -1,0 +1,243 @@
+{
+  "schema_version": 2,
+  "active_work_id": "node-fetch-port-ecdb91f7",
+  "works": {
+    "node-fetch-port-ecdb91f7": {
+      "work_id": "node-fetch-port-ecdb91f7",
+      "active_plan": "D:\\Coding\\impersonated-fetch\\.omo\\plans\\node-fetch-port.md",
+      "plan_name": "node-fetch-port",
+      "status": "completed",
+      "started_at": "2026-05-28T07:55:05.300Z",
+      "updated_at": "2026-05-28T12:41:41.699Z",
+      "session_ids": ["ses_1926b924bffemK2EyQgMeRKaMc"],
+      "session_origins": {
+        "ses_1926b924bffemK2EyQgMeRKaMc": "direct"
+      },
+      "agent": "atlas",
+      "task_sessions": {
+        "todo:1": {
+          "task_key": "todo:1",
+          "task_label": "1",
+          "task_title": "**F1 - Plan Compliance Audit**: Verify all 13 tasks have acceptance criteria met",
+          "session_id": "ses_1916c2ce6ffe4nHh65MLzQPXD3",
+          "agent": "oracle",
+          "started_at": "2026-05-28T08:09:01.681Z",
+          "ended_at": "2026-05-28T12:40:18.501Z",
+          "elapsed_ms": 16276820,
+          "status": "completed",
+          "updated_at": "2026-05-28T12:40:18.501Z"
+        },
+        "todo:3": {
+          "task_key": "todo:3",
+          "task_label": "3",
+          "task_title": "Define narrow FFI native transport ABI and memory contract",
+          "session_id": "ses_19227371affeRxQas50Q5aMqf0",
+          "agent": "Sisyphus-Junior",
+          "category": "deep",
+          "updated_at": "2026-05-28T09:16:50.372Z",
+          "started_at": "2026-05-28T09:16:20.848Z",
+          "status": "completed",
+          "ended_at": "2026-05-28T09:16:50.372Z",
+          "elapsed_ms": 29524
+        },
+        "todo:5": {
+          "task_key": "todo:5",
+          "task_label": "5",
+          "task_title": "Implement transport interface and capability matrix",
+          "session_id": "ses_192162c80ffeClbJN1kzB6QfBk",
+          "agent": "Sisyphus-Junior",
+          "category": "deep",
+          "started_at": "2026-05-28T09:27:29.203Z",
+          "status": "completed",
+          "updated_at": "2026-05-28T09:42:50.348Z",
+          "ended_at": "2026-05-28T09:42:50.348Z",
+          "elapsed_ms": 921145
+        },
+        "todo:6": {
+          "task_key": "todo:6",
+          "task_label": "6",
+          "task_title": "Implement FFI native transport adapter",
+          "session_id": "ses_19208734affevDIcNaCTbNtBdz",
+          "agent": "Sisyphus-Junior",
+          "category": "deep",
+          "updated_at": "2026-05-28T10:01:07.515Z",
+          "started_at": "2026-05-28T10:00:06.263Z",
+          "status": "completed",
+          "ended_at": "2026-05-28T10:01:07.515Z",
+          "elapsed_ms": 61252
+        },
+        "todo:7": {
+          "task_key": "todo:7",
+          "task_label": "7",
+          "task_title": "Implement Fetch facade with standard body semantics and extensions",
+          "session_id": "ses_191f7e565ffeA6xaXhQtSVu4cV",
+          "agent": "Sisyphus-Junior",
+          "category": "unspecified-high",
+          "updated_at": "2026-05-28T10:36:01.763Z",
+          "started_at": "2026-05-28T10:16:32.451Z",
+          "status": "completed",
+          "ended_at": "2026-05-28T10:36:01.763Z",
+          "elapsed_ms": 1169312
+        },
+        "todo:8": {
+          "task_key": "todo:8",
+          "task_label": "8",
+          "task_title": "Implement Client/Session state for cookies, defaults, redirects, proxy, and lifecycle",
+          "session_id": "ses_191d79e4fffeQ46xlwJHYyWMZc",
+          "agent": "Sisyphus-Junior",
+          "category": "unspecified-high",
+          "updated_at": "2026-05-28T11:13:33.403Z",
+          "started_at": "2026-05-28T11:12:28.582Z",
+          "status": "completed",
+          "ended_at": "2026-05-28T11:13:33.403Z",
+          "elapsed_ms": 64821
+        },
+        "todo:11": {
+          "task_key": "todo:11",
+          "task_label": "11",
+          "task_title": "Build fixture and fingerprint/protocol verification suite",
+          "session_id": "ses_191b59471ffeJYHjH5qYpeKYFL",
+          "agent": "Sisyphus-Junior",
+          "category": "unspecified-high",
+          "updated_at": "2026-05-28T11:31:26.083Z",
+          "started_at": "2026-05-28T11:30:30.059Z",
+          "status": "completed",
+          "ended_at": "2026-05-28T11:31:26.083Z",
+          "elapsed_ms": 56024
+        },
+        "final-wave:f1": {
+          "task_key": "final-wave:f1",
+          "task_label": "F1",
+          "task_title": "Plan Compliance Audit — oracle",
+          "session_id": "ses_191812469ffeNx4qX8c7udkxRC",
+          "agent": "Sisyphus-Junior",
+          "category": "unspecified-high",
+          "started_at": "2026-05-28T11:57:19.438Z",
+          "status": "completed",
+          "updated_at": "2026-05-28T12:40:44.022Z",
+          "ended_at": "2026-05-28T12:40:44.022Z",
+          "elapsed_ms": 2604584
+        }
+      },
+      "ended_at": "2026-05-28T12:41:41.699Z",
+      "elapsed_ms": 17196399
+    }
+  },
+  "active_plan": "D:\\Coding\\impersonated-fetch\\.omo\\plans\\node-fetch-port.md",
+  "started_at": "2026-05-28T07:55:05.300Z",
+  "status": "completed",
+  "updated_at": "2026-05-28T12:41:41.699Z",
+  "session_ids": ["ses_1926b924bffemK2EyQgMeRKaMc"],
+  "session_origins": {
+    "ses_1926b924bffemK2EyQgMeRKaMc": "direct"
+  },
+  "plan_name": "node-fetch-port",
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "**F1 - Plan Compliance Audit**: Verify all 13 tasks have acceptance criteria met",
+      "session_id": "ses_1916c2ce6ffe4nHh65MLzQPXD3",
+      "agent": "oracle",
+      "started_at": "2026-05-28T08:09:01.681Z",
+      "ended_at": "2026-05-28T12:40:18.501Z",
+      "elapsed_ms": 16276820,
+      "status": "completed",
+      "updated_at": "2026-05-28T12:40:18.501Z"
+    },
+    "todo:3": {
+      "task_key": "todo:3",
+      "task_label": "3",
+      "task_title": "Define narrow FFI native transport ABI and memory contract",
+      "session_id": "ses_19227371affeRxQas50Q5aMqf0",
+      "agent": "Sisyphus-Junior",
+      "category": "deep",
+      "updated_at": "2026-05-28T09:16:50.372Z",
+      "started_at": "2026-05-28T09:16:20.848Z",
+      "status": "completed",
+      "ended_at": "2026-05-28T09:16:50.372Z",
+      "elapsed_ms": 29524
+    },
+    "todo:5": {
+      "task_key": "todo:5",
+      "task_label": "5",
+      "task_title": "Implement transport interface and capability matrix",
+      "session_id": "ses_192162c80ffeClbJN1kzB6QfBk",
+      "agent": "Sisyphus-Junior",
+      "category": "deep",
+      "started_at": "2026-05-28T09:27:29.203Z",
+      "status": "completed",
+      "updated_at": "2026-05-28T09:42:50.348Z",
+      "ended_at": "2026-05-28T09:42:50.348Z",
+      "elapsed_ms": 921145
+    },
+    "todo:6": {
+      "task_key": "todo:6",
+      "task_label": "6",
+      "task_title": "Implement FFI native transport adapter",
+      "session_id": "ses_19208734affevDIcNaCTbNtBdz",
+      "agent": "Sisyphus-Junior",
+      "category": "deep",
+      "updated_at": "2026-05-28T10:01:07.515Z",
+      "started_at": "2026-05-28T10:00:06.263Z",
+      "status": "completed",
+      "ended_at": "2026-05-28T10:01:07.515Z",
+      "elapsed_ms": 61252
+    },
+    "todo:7": {
+      "task_key": "todo:7",
+      "task_label": "7",
+      "task_title": "Implement Fetch facade with standard body semantics and extensions",
+      "session_id": "ses_191f7e565ffeA6xaXhQtSVu4cV",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-05-28T10:36:01.763Z",
+      "started_at": "2026-05-28T10:16:32.451Z",
+      "status": "completed",
+      "ended_at": "2026-05-28T10:36:01.763Z",
+      "elapsed_ms": 1169312
+    },
+    "todo:8": {
+      "task_key": "todo:8",
+      "task_label": "8",
+      "task_title": "Implement Client/Session state for cookies, defaults, redirects, proxy, and lifecycle",
+      "session_id": "ses_191d79e4fffeQ46xlwJHYyWMZc",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-05-28T11:13:33.403Z",
+      "started_at": "2026-05-28T11:12:28.582Z",
+      "status": "completed",
+      "ended_at": "2026-05-28T11:13:33.403Z",
+      "elapsed_ms": 64821
+    },
+    "todo:11": {
+      "task_key": "todo:11",
+      "task_label": "11",
+      "task_title": "Build fixture and fingerprint/protocol verification suite",
+      "session_id": "ses_191b59471ffeJYHjH5qYpeKYFL",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-05-28T11:31:26.083Z",
+      "started_at": "2026-05-28T11:30:30.059Z",
+      "status": "completed",
+      "ended_at": "2026-05-28T11:31:26.083Z",
+      "elapsed_ms": 56024
+    },
+    "final-wave:f1": {
+      "task_key": "final-wave:f1",
+      "task_label": "F1",
+      "task_title": "Plan Compliance Audit — oracle",
+      "session_id": "ses_191812469ffeNx4qX8c7udkxRC",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "started_at": "2026-05-28T11:57:19.438Z",
+      "status": "completed",
+      "updated_at": "2026-05-28T12:40:44.022Z",
+      "ended_at": "2026-05-28T12:40:44.022Z",
+      "elapsed_ms": 2604584
+    }
+  },
+  "agent": "atlas",
+  "ended_at": "2026-05-28T12:41:41.699Z",
+  "elapsed_ms": 17196399
+}

@@ -1,0 +1,37 @@
+{
+  "Id": "a1695ccf-1445-4a0e-ae83-f817c64027e5",
+  "Method": "GET",
+  "Url": "https://tls.peet.ws/api/all",
+  "Ja3": "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,45-10-23-35-27-16-18-13-17613-65037-11-51-65281-5-0-43-41,4588-29-23-24,0",
+  "RandomJA3": true,
+  "Headers": {
+    "User-Agent": "agent",
+    "Accept": "*/*"
+  },
+  "HeadersOrder": [
+    "cache-control",
+    "sec-ch-ua",
+    "sec-ch-ua-mobile",
+    "sec-ch-ua-platform",
+    "upgrade-insecure-requests",
+    "user-agent",
+    "accept",
+    "sec-fetch-site",
+    "sec-fetch-mode",
+    "sec-fetch-user",
+    "sec-fetch-dest",
+    "accept-encoding",
+    "accept-language",
+    "priority"
+  ],
+  "AllowRedirects": true,
+  "ForceHTTP1": false,
+  "PseudoHeaderOrder": [
+    ":method",
+    ":authority",
+    ":scheme",
+    ":path"
+  ],
+  "TLSExtensions": "{\"supported_signature_algorithms\":[\"ecdsa_secp256r1_sha256\",\"rsa_pss_rsae_sha256\",\"rsa_pkcs1_sha256\",\"ecdsa_secp384r1_sha384\",\"rsa_pss_rsae_sha384\",\"rsa_pkcs1_sha384\",\"rsa_pss_rsae_sha512\",\"rsa_pkcs1_sha512\"],\"cert_compression_algo\":[\"brotli\"],\"record_size_limit\":null,\"supported_delegated_credentials_algorithms\":null,\"supported_versions\":[\"GREASE\",\"1.3\",\"1.2\"],\"psk_key_exchange_modes\":[\"PskModeDHE\"],\"signature_algorithms_cert\":null,\"key_share_curves\":[\"GREASE\",\"4588\",\"X25519\"],\"not_used_grease\":false,\"client_hello_hex_stream\":\"\"}",
+  "HTTP2Settings": "{\"settings\":{\"HEADER_TABLE_SIZE\":65536,\"ENABLE_PUSH\":0,\"INITIAL_WINDOW_SIZE\":6291456,\"MAX_HEADER_LIST_SIZE\":262144},\"settings_ack\":false,\"settings_order\":[\"HEADER_TABLE_SIZE\",\"ENABLE_PUSH\",\"INITIAL_WINDOW_SIZE\",\"MAX_HEADER_LIST_SIZE\"],\"connection_flow\":15663105,\"headers_id\":1,\"header_priority\":{\"weight\":256,\"streamDep\":0,\"exclusive\":true},\"priority_frames\":null}"
+}

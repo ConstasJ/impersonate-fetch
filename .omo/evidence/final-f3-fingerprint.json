@@ -1,0 +1,67 @@
+{
+  "verification": "Final Verification Wave F3: Real Manual QA",
+  "date": "2026-05-28",
+  "platform": {
+    "processPlatform": "win32",
+    "processArch": "x64",
+    "node": "v24.15.0",
+    "supportedNativePlatform": true
+  },
+  "verdict": "NOT_APPROVED",
+  "commands": [
+    {
+      "command": "npm run test:package",
+      "status": "PASS",
+      "evidence": [
+        "node scripts/build.mjs completed",
+        "CJS package smoke test passed",
+        "ESM package smoke test passed"
+      ]
+    },
+    {
+      "command": "npm run examples:smoke",
+      "status": "PASS",
+      "evidence": [
+        "All 12 expected example files exist",
+        "All example imports validated",
+        "All examples pass TypeScript type checking",
+        "All examples smoke tests passed"
+      ]
+    },
+    {
+      "command": "RUN_NETWORK=1 npm run test:fingerprint",
+      "status": "FAIL",
+      "endpoint": "https://tls.peet.ws/api/all",
+      "error": {
+        "name": "SyntaxError",
+        "message": "Unterminated string in JSON at position 3423 (line 96 column 828)",
+        "tapFailureType": "testCodeFailure"
+      },
+      "summary": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1
+      },
+      "nativeRuntimeSignal": "Go/native transport emitted: Unsolicited response received on idle HTTP channel starting with \\\"\\\\r\\\\n\\\\r\\\\n\\\"; err=<nil>",
+      "newFingerprintEvidenceWritten": false
+    }
+  ],
+  "fallbackVerification": {
+    "approvedIfFallbackUsed": false,
+    "currentFingerprintTestTransportLabel": "impersonated-fetch",
+    "nativeUnavailableBehavior": "throws NativeAbiUnavailableError",
+    "sourceDistTestFallbackMarkerSearch": {
+      "patterns": ["global-fetch-fallback", "globalThis.fetch", "global.fetch"],
+      "paths": ["src", "dist", "test"],
+      "matches": []
+    },
+    "stalePriorEvidence": {
+      "path": ".omo/evidence/task-11-fingerprint.json",
+      "transport": "global-fetch-fallback",
+      "note": "This file is from an earlier run. The F3 re-run failed before overwriting it."
+    }
+  },
+  "blockingFailures": [
+    "RUN_NETWORK=1 npm run test:fingerprint exited non-zero with a JSON parse failure, so required fingerprint evidence was not captured."
+  ]
+}

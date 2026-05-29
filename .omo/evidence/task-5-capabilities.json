@@ -1,0 +1,48 @@
+{
+  "task": 5,
+  "name": "transport capability matrix",
+  "backend": "native",
+  "evidenceSources": [
+    "src/native/assets.ts",
+    "src/native/abi.ts",
+    "src/impersonation/types.ts",
+    "src/impersonation/presets.ts"
+  ],
+  "assetBackedPlatforms": [
+    "linux/x64",
+    "linux/arm64",
+    "linux/ia32",
+    "win32/x64",
+    "darwin/x64",
+    "darwin/arm64"
+  ],
+  "nativeAbiSymbols": [
+    "request",
+    "freeMemory",
+    "freeSession",
+    "stream_request",
+    "stream_read",
+    "stream_close"
+  ],
+  "supportedWhenNativeAssetExists": [
+    "platform",
+    "nativeBinary",
+    "http1_1",
+    "http2",
+    "ja3",
+    "browserPresets",
+    "customClientHello",
+    "customHttp2Settings",
+    "orderedHeaders",
+    "proxy",
+    "cookies",
+    "streamingResponse",
+    "redirects"
+  ],
+  "unsupportedByCurrentEvidence": ["ja4", "streamingUpload", "abortSignal"],
+  "verification": {
+    "npm test -- capabilities": "exit 0; 7 tests passed",
+    "npm run build": "exit 0",
+    "lsp_diagnostics": "biome server exited with code -4058 before diagnostics"
+  }
+}

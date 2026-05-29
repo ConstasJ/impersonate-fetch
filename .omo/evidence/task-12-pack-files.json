@@ -1,0 +1,442 @@
+[
+  {
+    "path": "dist/cjs/body.js",
+    "size": 3498,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/client.js",
+    "size": 6613,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/cookies.js",
+    "size": 6284,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/errors.js",
+    "size": 3357,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/fetch.js",
+    "size": 10157,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/impersonation/config.js",
+    "size": 5402,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/impersonation/convert.js",
+    "size": 7256,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/impersonation/fingerprint.js",
+    "size": 9834,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/impersonation/presets.js",
+    "size": 21220,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/impersonation/serialize.js",
+    "size": 10645,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/impersonation/types.js",
+    "size": 4860,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/index.js",
+    "size": 5770,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/native/abi.js",
+    "size": 4158,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/native/assets.js",
+    "size": 2980,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/native/bindings-errors.js",
+    "size": 1176,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/native/bindings-loader.js",
+    "size": 3900,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/native/bindings-protocol.js",
+    "size": 1392,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/native/bindings-shim.js",
+    "size": 5755,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/native/bindings.js",
+    "size": 2638,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/native/ffi.js",
+    "size": 3343,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/package.json",
+    "size": 25,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/redirects.js",
+    "size": 1815,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/timeout.js",
+    "size": 2627,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/transport/capabilities.js",
+    "size": 7190,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/transport/native.js",
+    "size": 8498,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/transport/types.js",
+    "size": 77,
+    "mode": 420
+  },
+  {
+    "path": "dist/cjs/types.js",
+    "size": 77,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/body.js",
+    "size": 3339,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/client.js",
+    "size": 6406,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/cookies.js",
+    "size": 6081,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/errors.js",
+    "size": 2439,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/fetch.js",
+    "size": 9829,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/impersonation/config.js",
+    "size": 4940,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/impersonation/convert.js",
+    "size": 6656,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/impersonation/fingerprint.js",
+    "size": 9638,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/impersonation/presets.js",
+    "size": 19296,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/impersonation/serialize.js",
+    "size": 10274,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/impersonation/types.js",
+    "size": 2341,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/index.js",
+    "size": 929,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/native/abi.js",
+    "size": 3953,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/native/assets.js",
+    "size": 2574,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/native/bindings-errors.js",
+    "size": 753,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/native/bindings-loader.js",
+    "size": 2243,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/native/bindings-protocol.js",
+    "size": 1128,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/native/bindings-shim.js",
+    "size": 5271,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/native/bindings.js",
+    "size": 1630,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/native/ffi.js",
+    "size": 3116,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/package.json",
+    "size": 23,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/redirects.js",
+    "size": 1533,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/timeout.js",
+    "size": 2369,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/transport/capabilities.js",
+    "size": 7004,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/transport/native.js",
+    "size": 8146,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/transport/types.js",
+    "size": 11,
+    "mode": 420
+  },
+  {
+    "path": "dist/esm/types.js",
+    "size": 11,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/body.d.ts",
+    "size": 635,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/client.d.ts",
+    "size": 540,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/cookies.d.ts",
+    "size": 818,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/errors.d.ts",
+    "size": 1937,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/fetch.d.ts",
+    "size": 1984,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/impersonation/config.d.ts",
+    "size": 850,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/impersonation/convert.d.ts",
+    "size": 910,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/impersonation/fingerprint.d.ts",
+    "size": 258,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/impersonation/presets.d.ts",
+    "size": 3170,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/impersonation/serialize.d.ts",
+    "size": 943,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/impersonation/types.d.ts",
+    "size": 4274,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/index.d.ts",
+    "size": 1320,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/native/abi.d.ts",
+    "size": 8974,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/native/assets.d.ts",
+    "size": 659,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/native/bindings-errors.d.ts",
+    "size": 557,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/native/bindings-loader.d.ts",
+    "size": 927,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/native/bindings-protocol.d.ts",
+    "size": 799,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/native/bindings-shim.d.ts",
+    "size": 937,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/native/bindings.d.ts",
+    "size": 1624,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/native/ffi.d.ts",
+    "size": 985,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/redirects.d.ts",
+    "size": 743,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/timeout.d.ts",
+    "size": 676,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/transport/capabilities.d.ts",
+    "size": 1311,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/transport/native.d.ts",
+    "size": 992,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/transport/types.d.ts",
+    "size": 1932,
+    "mode": 420
+  },
+  {
+    "path": "dist/types/types.d.ts",
+    "size": 507,
+    "mode": 420
+  },
+  {
+    "path": "package.json",
+    "size": 2512,
+    "mode": 420
+  },
+  {
+    "path": "README.md",
+    "size": 11328,
+    "mode": 420
+  },
+  {
+    "path": "requests-go/requests_go/tls_client/dependencies/requests-go-amd64.so",
+    "size": 12013112,
+    "mode": 420
+  },
+  {
+    "path": "requests-go/requests_go/tls_client/dependencies/requests-go-arm64.dylib",
+    "size": 8147714,
+    "mode": 420
+  },
+  {
+    "path": "requests-go/requests_go/tls_client/dependencies/requests-go-arm64.so",
+    "size": 11255024,
+    "mode": 420
+  },
+  {
+    "path": "requests-go/requests_go/tls_client/dependencies/requests-go-win64.dll",
+    "size": 15590294,
+    "mode": 420
+  },
+  {
+    "path": "requests-go/requests_go/tls_client/dependencies/requests-go-x86.dylib",
+    "size": 8608128,
+    "mode": 420
+  },
+  {
+    "path": "requests-go/requests_go/tls_client/dependencies/requests-go-x86.so",
+    "size": 12013112,
+    "mode": 420
+  }
+]
