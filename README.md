@@ -1,6 +1,6 @@
 # impersonated-fetch
 
-A Node.js Fetch-style HTTP client with TLS fingerprint impersonation capabilities. This package ports the Python `requests_go` library to Node.js, providing TLS/JA3 fingerprint spoofing and JA4-oriented header controls through a modern, Promise-based API.
+A Node.js Fetch-style HTTP client with TLS fingerprint impersonation capabilities. This package ports the [requests-go](https://github.com/wangluozhe/requests-go) Python library to Node.js, providing TLS/JA3 fingerprint spoofing and JA4-oriented header controls through a modern, Promise-based API.
 
 ## Overview
 
@@ -394,3 +394,7 @@ MIT
 ## Contributing
 
 Contributions are welcome. Please ensure your code follows the existing patterns and includes appropriate tests.
+
+## Thnaks
+
+- @wangluozhe: Developing the original requests-go library
