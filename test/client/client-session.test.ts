@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'vitest';
 
-import { Client, fetch, getCapabilities } from '../../dist/index.mjs';
+import { Client } from '@/client.js';
+import { fetch } from '@/fetch.js';
+import { getCapabilities } from '@/transport/capabilities.js';
 import type {
   TransportBackend,
   TransportRequest,
   TransportResponse,
   TransportStream,
-} from '../../src/transport/types.ts';
+} from '@/transport/types.js';
 
 const capabilities = getCapabilities({ platform: 'linux', arch: 'x64' });
 

@@ -1,10 +1,10 @@
-import { UnsupportedCapabilityError } from '../errors.js';
-import { nativeAbiSymbolNames } from '../native/abi.js';
+import { UnsupportedCapabilityError } from '@/errors.js';
+import { nativeAbiSymbolNames } from '@/native/abi.js';
 import {
   getNativeAssetInfo,
   type NativeArchitecture,
   type NativePlatform,
-} from '../native/assets.js';
+} from '@/native/assets.js';
 import type { TransportBackendName, TransportRequest } from './types.js';
 
 export const capabilityNames = [

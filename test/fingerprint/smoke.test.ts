@@ -2,12 +2,9 @@ import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { describe, it } from 'vitest';
-
-import {
-  createNativeTransportBackend,
-  createTLSConfig,
-  NativeAbiUnavailableError,
-} from '../../dist/index.mjs';
+import { NativeAbiUnavailableError } from '@/errors.js';
+import { createTLSConfig } from '@/impersonation/config.js';
+import { createNativeTransportBackend } from '@/transport/native.js';
 
 const endpoint = process.env.FINGERPRINT_ENDPOINT ?? 'https://tls.peet.ws/api/all';
 const evidencePath = '.omo/evidence/task-11-fingerprint.json';

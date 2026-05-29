@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import { createRequire } from 'node:module';
+import koffi from 'koffi';
 import { describe, it } from 'vitest';
-import { nativeAbiFfiDeclarations, nativeAbiSymbolNames } from '../../src/native/abi.ts';
-import { getNativeAssetInfo } from '../../src/native/assets.ts';
+import { nativeAbiKoffiSignatures, nativeAbiSymbolNames } from '@/native/abi.js';
+import { getNativeAssetInfo } from '@/native/assets.js';
 
 type NativeAbiProbeMode = 'direct' | 'requiresShim';
 
@@ -13,51 +13,23 @@ interface NativeAbiProbeResult {
   reason?: string;
 }
 
-const require = createRequire(import.meta.url);
-
 describe('native-abi contract', () => {
-  it('native-abi reports direct FFI availability or shim requirement', () => {
+  it('native-abi loads the current platform asset with Koffi and exposes symbols', () => {
     const result = probeNativeAbi();
 
     assert.match(result.assetPath, /requests-go.*\.(dll|so|dylib)$/);
     assert.deepEqual(result.checkedSymbols, nativeAbiSymbolNames);
-    assert.ok(result.mode === 'direct' || result.mode === 'requiresShim');
-
-    console.log(`mode=${result.mode}`);
-    if (result.reason) {
-      console.log(`reason=${result.reason}`);
-    }
+    assert.equal(result.mode, 'direct');
   });
 });
 
 function probeNativeAbi(): NativeAbiProbeResult {
   const asset = getNativeAssetInfo();
 
-  let ffi: unknown;
   try {
-    ffi = require('ffi-napi');
-  } catch (error) {
-    return {
-      mode: 'requiresShim',
-      assetPath: asset.path,
-      checkedSymbols: nativeAbiSymbolNames,
-      reason: `ffi-napi-unavailable:${errorName(error)}`,
-    };
-  }
-
-  if (!isFfiNapi(ffi)) {
-    return {
-      mode: 'requiresShim',
-      assetPath: asset.path,
-      checkedSymbols: nativeAbiSymbolNames,
-      reason: 'ffi-napi-missing-Library',
-    };
-  }
-
-  try {
-    const library = ffi.Library(asset.path, nativeAbiFfiDeclarations);
+    const library = koffi.load(asset.path);
     const missingSymbol = nativeAbiSymbolNames.find(
-      (symbolName) => typeof library[symbolName] !== 'function',
+      (symbolName) => typeof library.func(nativeAbiKoffiSignatures[symbolName]) !== 'function',
     );
 
     if (missingSymbol) {
@@ -82,17 +54,6 @@ function probeNativeAbi(): NativeAbiProbeResult {
     assetPath: asset.path,
     checkedSymbols: nativeAbiSymbolNames,
   };
-}
-
-function isFfiNapi(value: unknown): value is {
-  Library(path: string, declarations: typeof nativeAbiFfiDeclarations): Record<string, unknown>;
-} {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'Library' in value &&
-    typeof value.Library === 'function'
-  );
 }
 
 function errorName(error: unknown): string {

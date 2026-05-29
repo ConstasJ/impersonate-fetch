@@ -1,13 +1,5 @@
-import type {
-  NativeRequestPayload,
-  NativeResponsePayload,
-  NativeStreamOpenPayload,
-  NativeStreamReadPayload,
-} from './abi.js';
-import {
-  NativeBindingNativeError,
-  NativeBindingProtocolError,
-} from './bindings-errors.js';
+import type { NativeRequestPayload } from './abi.js';
+import { NativeBindingNativeError, NativeBindingProtocolError } from './bindings-errors.js';
 
 export interface ShimRequestMessage {
   id: number;

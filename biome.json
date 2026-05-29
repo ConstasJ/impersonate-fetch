@@ -35,12 +35,7 @@
         "noInferrableTypes": "error",
         "noNamespace": "error",
         "useImportType": "error",
-        "useNamingConvention": {
-          "level": "warn",
-          "options": {
-            "strictCase": false
-          }
-        }
+        "useNamingConvention": "off"
       }
     }
   },

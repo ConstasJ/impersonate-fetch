@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
 
-import { Client, fetch } from '../../dist/index.mjs';
-import { type FixtureServer, startFixtureServer } from '../fixtures/server.ts';
+import { Client } from '@/client.js';
+import { fetch } from '@/fetch.js';
+import { type FixtureServer, startFixtureServer } from '../fixtures/server.js';
 
 const fixtureCapabilities = {
   backend: 'native',

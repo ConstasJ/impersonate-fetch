@@ -1,18 +1,14 @@
 // TLS Config creation and cloning utilities
+
+import { randomizeJa3 } from './fingerprint.js';
 import type {
-  HTTP2Settings,
   HeaderPriority,
+  HTTP2Settings,
   PriorityFrame,
-  PseudoHeaderName,
   TLSConfig,
   TLSExtensions,
 } from './types.js';
-import {
-  defaultHTTP2Settings,
-  defaultPseudoHeaderOrder,
-  defaultTLSExtensions,
-} from './types.js';
-import { randomizeJa3 } from './fingerprint.js';
+import { defaultHTTP2Settings, defaultPseudoHeaderOrder, defaultTLSExtensions } from './types.js';
 
 type Nullable<T> = T | null;
 
@@ -163,7 +159,11 @@ export function cloneTLSConfig(config: TLSConfig): TLSConfig {
 export function createOrderedHeaderMetadata(
   headers: Record<string, string>,
   controls: Partial<Pick<TLSConfig, 'headersOrder' | 'unChangedHeaderKey'>> = {},
-): { headers: Record<string, string>; headersOrder: Nullable<string[]>; unChangedHeaderKey: Nullable<string[]> } {
+): {
+  headers: Record<string, string>;
+  headersOrder: Nullable<string[]>;
+  unChangedHeaderKey: Nullable<string[]>;
+} {
   return {
     headers: { ...headers },
     headersOrder: cloneNullableArray(controls.headersOrder ?? null),

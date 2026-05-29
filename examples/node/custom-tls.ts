@@ -5,7 +5,7 @@
  * This mirrors Python requests_go TLSConfig customization.
  */
 
-import { createTLSConfig, fetch, TLS_CHROME_LATEST } from '../../src/index.js';
+import { createTLSConfig, fetch } from '../../src/index.js';
 
 async function main() {
   console.log('=== Custom TLS Configuration Example ===\n');

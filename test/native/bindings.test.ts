@@ -1,13 +1,14 @@
+/** biome-ignore-all lint/style/useNamingConvention: Native ABI fixtures mirror external symbol names. */
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
 import { describe, it } from 'vitest';
 
-import type { NativeAssetInfo } from '../../src/native/assets.ts';
+import type { NativeAssetInfo } from '@/native/assets.js';
 import {
   createNativeBindings,
   NativeBindingLoadError,
   NativeBindingNativeError,
-} from '../../src/native/bindings.ts';
+} from '@/native/bindings.js';
 
 const asset: NativeAssetInfo = {
   platform: 'test',
@@ -113,6 +114,27 @@ describe('native-bindings stable facade', () => {
       'streamClose',
       'free',
     ]);
+  });
+
+  it('native-bindings auto mode falls back to shim when direct binary loading fails', async () => {
+    const child = new FakeChildProcess();
+    const bindings = createNativeBindings({
+      asset,
+      ffiLoader: () => ({
+        Library() {
+          throw new Error('binary load failed');
+        },
+      }),
+      shimCommand: 'fake-shim',
+      spawnProcess(command, args) {
+        assert.equal(command, 'fake-shim');
+        assert.deepEqual(args, [asset.path]);
+        return child as never;
+      },
+    });
+
+    assert.equal(bindings.mode, 'requiresShim');
+    assert.equal((await bindings.request(requestPayload)).url, requestPayload.Url);
   });
 
   it('native-bindings throws typed native errors instead of returning err payloads', async () => {

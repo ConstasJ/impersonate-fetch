@@ -1,8 +1,8 @@
 // Snake/Camel case conversion utilities for TLS config
 import type {
+  HeaderPriority,
   HTTP2Settings,
   HTTP2SettingsPayload,
-  HeaderPriority,
   PriorityFrame,
   TLSConfig,
   TLSConfigPayload,
@@ -141,16 +141,13 @@ export const fromPythonTLSConfig = tlsConfigFromSnakeCase;
 export const toNativeTLSConfigPayload = tlsConfigToSnakeCase;
 
 // Import from types.ts for defaults
-import {
-  defaultHTTP2Settings,
-  defaultPseudoHeaderOrder,
-  defaultTLSExtensions,
-  type PseudoHeaderName,
-} from './types.js';
+import { defaultHTTP2Settings, defaultPseudoHeaderOrder, defaultTLSExtensions } from './types.js';
 
 function createDefaultTLSExtensions(): TLSExtensions {
   return {
-    supportedSignatureAlgorithms: cloneNullableArray(defaultTLSExtensions.supportedSignatureAlgorithms),
+    supportedSignatureAlgorithms: cloneNullableArray(
+      defaultTLSExtensions.supportedSignatureAlgorithms,
+    ),
     certCompressionAlgo: cloneNullableArray(defaultTLSExtensions.certCompressionAlgo),
     recordSizeLimit: defaultTLSExtensions.recordSizeLimit,
     supportedDelegatedCredentialsAlgorithms: cloneNullableArray(

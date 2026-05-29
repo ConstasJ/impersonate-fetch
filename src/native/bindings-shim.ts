@@ -8,16 +8,13 @@ import type {
   NativeStreamReadPayload,
 } from './abi.js';
 import type { NativeAssetInfo } from './assets.js';
+import { NativeBindingLoadError, NativeBindingProtocolError } from './bindings-errors.js';
 import {
-  NativeBindingLoadError,
-  NativeBindingProtocolError,
-} from './bindings-errors.js';
-import {
-  parseShimResult,
-  serializePayload,
   type PendingShimCall,
+  parseShimResult,
   type ShimRequestMessage,
   type ShimResponseMessage,
+  serializePayload,
 } from './bindings-protocol.js';
 
 export interface NativeBindingsShim {
@@ -84,10 +81,10 @@ class NativeShimProcess {
 
   constructor(command: string, asset: NativeAssetInfo, spawnProcess: typeof spawn) {
     this.child = spawnProcess(command, [asset.path], { stdio: 'pipe', windowsHide: true });
-    this.child.stdout!.setEncoding('utf8');
-    this.child.stderr!.setEncoding('utf8');
-    this.child.stdout!.on('data', (chunk) => this.handleStdout(String(chunk)));
-    this.child.stderr!.on('data', (chunk) => {
+    this.child.stdout?.setEncoding('utf8');
+    this.child.stderr?.setEncoding('utf8');
+    this.child.stdout?.on('data', (chunk) => this.handleStdout(String(chunk)));
+    this.child.stderr?.on('data', (chunk) => {
       this.stderrBuffer += String(chunk);
     });
     this.child.once('error', (error) =>
@@ -97,7 +94,7 @@ class NativeShimProcess {
       this.closed = true;
       this.rejectAll(
         new NativeBindingLoadError(
-          `Native shim exited before completing pending calls: code=${String(code)} signal=${String(signal)}`,
+          `Native shim exited before completing pending calls: code=${String(code)} signal=${String(signal)} stderr=${this.stderrBuffer.trim()}`,
         ),
       );
     });
@@ -117,7 +114,7 @@ class NativeShimProcess {
       this.pending.set(id, { resolve: resolve as (value: unknown) => void, reject });
 
       try {
-        this.child.stdin!.write(`${JSON.stringify(message)}\n`);
+        this.child.stdin?.write(`${JSON.stringify(message)}\n`);
       } catch (error) {
         this.pending.delete(id);
         reject(

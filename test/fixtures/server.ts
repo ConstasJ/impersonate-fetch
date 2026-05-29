@@ -14,7 +14,7 @@ import type {
   TransportRequest,
   TransportResponse,
   TransportStream,
-} from '../../src/transport/types.ts';
+} from '@/transport/types.js';
 
 export interface FixtureRequestRecord {
   body: Uint8Array;

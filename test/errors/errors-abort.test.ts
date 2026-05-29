@@ -1,28 +1,24 @@
+/** biome-ignore-all lint/style/useNamingConvention: Native ABI fixtures mirror external symbol names. */
 import assert from 'node:assert/strict';
 import { describe, it } from 'vitest';
-
 import {
   AbortError,
   FetchBodyUsedError,
-  fetch,
   NativeAbiUnavailableError,
-  NativeTransportBackend,
   NativeTransportError,
   TimeoutError,
   ValidationError,
-} from '../../dist/index.mjs';
+} from '@/errors.js';
+import { fetch } from '@/fetch.js';
 import type {
   NativeRequestPayload,
   NativeResponsePayload,
   NativeStreamOpenPayload,
   NativeStreamReadPayload,
-} from '../../src/native/abi.ts';
-import type { NativeFfiClient } from '../../src/native/ffi.ts';
-import type {
-  TransportBackend,
-  TransportRequest,
-  TransportStream,
-} from '../../src/transport/types.ts';
+} from '@/native/abi.js';
+import type { NativeFfiClient } from '@/native/ffi.js';
+import { NativeTransportBackend } from '@/transport/native.js';
+import type { TransportBackend, TransportRequest, TransportStream } from '@/transport/types.js';
 
 describe('errors-abort typed errors', () => {
   it('errors-abort exports typed cancellation, native, body-used, and validation errors', () => {
@@ -89,7 +85,6 @@ describe('errors-abort fetch facade', () => {
         }),
       TimeoutError,
     );
-    console.log('task-10-timeout: timeout during transport handshake produced TimeoutError');
   });
 
   it('errors-abort aborts while reading response body and closes stream', async () => {
@@ -105,7 +100,6 @@ describe('errors-abort fetch facade', () => {
 
     await assert.rejects(() => pendingText, AbortError);
     assert.deepEqual(transport.calls, ['stream', 'read', 'close']);
-    console.log('task-10-abort-midstream: response body abort closed mock stream');
   });
 
   it('errors-abort ignores abort after response body completes and rejects body reuse', async () => {

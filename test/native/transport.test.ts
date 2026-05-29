@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'vitest';
-
-import { NativeTransportBackend, NativeTransportError } from '../../dist/index.mjs';
+import { NativeTransportError } from '@/errors.js';
 import type {
   NativeRequestPayload,
   NativeResponsePayload,
   NativeStreamOpenPayload,
   NativeStreamReadPayload,
-} from '../../src/native/abi.ts';
-import type { NativeFfiClient } from '../../src/native/ffi.ts';
-import type { TransportRequest } from '../../src/transport/types.ts';
+} from '@/native/abi.js';
+import type { NativeFfiClient } from '@/native/ffi.js';
+import { NativeTransportBackend } from '@/transport/native.js';
+import type { TransportRequest } from '@/transport/types.js';
 
 describe('native-transport adapter', () => {
   it('native-transport converts TransportRequest into native payload shape', async () => {

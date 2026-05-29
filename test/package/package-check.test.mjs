@@ -17,13 +17,7 @@ const npmPackInvocation =
         args: ['/d', '/s', '/c', 'npm pack --dry-run --json'],
       }
     : { command: 'npm', args: ['pack', '--dry-run', '--json'] };
-const nativeDependenciesDir = resolve(
-  root,
-  'requests-go',
-  'requests_go',
-  'tls_client',
-  'dependencies',
-);
+const nativeDependenciesDir = resolve(root, 'native');
 
 const expectedNativeAssets = new Map([
   [
@@ -109,7 +103,7 @@ describe('package contents', () => {
     );
 
     for (const filename of expectedNativeAssets.keys()) {
-      const path = `requests-go/requests_go/tls_client/dependencies/${filename}`;
+      const path = `native/${filename}`;
       assert.equal(packagedPaths.has(path), true, `npm pack is missing ${path}`);
     }
   }, 15_000);

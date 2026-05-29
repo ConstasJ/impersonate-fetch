@@ -1,4 +1,4 @@
-import type { ImpersonationOptions } from '../impersonation/types.js';
+import type { ImpersonationOptions } from '@/impersonation/types.js';
 
 export type TransportBackendName = 'native';
 

@@ -7,8 +7,8 @@ import { describe, it } from 'vitest';
 import {
   ImpersonationSerializationError,
   serializeNativeRequest,
-  type TLSConfigPayload,
-} from '../../dist/index.mjs';
+} from '@/impersonation/serialize.js';
+import type { TLSConfigPayload } from '@/impersonation/types.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..', '..');

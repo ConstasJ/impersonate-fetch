@@ -149,10 +149,14 @@ function requestHeaders(
 ): Headers {
   const headers = new Headers(defaults);
   if (isRequest(input) && init === undefined) {
-    input.headers.forEach((value, name) => headers.set(name, value));
+    input.headers.forEach((value, name) => {
+      headers.set(name, value);
+    });
   }
   if (init !== undefined) {
-    new Headers(init).forEach((value, name) => headers.set(name, value));
+    new Headers(init).forEach((value, name) => {
+      headers.set(name, value);
+    });
   }
   return headers;
 }

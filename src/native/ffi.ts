@@ -2,7 +2,7 @@ import {
   NativeAbiUnavailableError,
   NativeTransportError,
   TransportProtocolError,
-} from '../errors.js';
+} from '@/errors.js';
 import type {
   NativeRequestPayload,
   NativeResponsePayload,

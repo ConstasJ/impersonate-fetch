@@ -1,16 +1,15 @@
 // JA3 fingerprinting and browser fingerprint parsing
+
+import { createHTTP2Settings, createTLSExtensions } from './config.js';
 import type {
   BrowserFingerprintPayload,
   HeaderPriority,
   HTTP2SettingName,
-  HTTP2Settings,
   PriorityFrame,
   PseudoHeaderName,
   TLSConfig,
-  TLSExtensions,
 } from './types.js';
 import { defaultPseudoHeaderOrder } from './types.js';
-import { createHTTP2Settings, createTLSExtensions } from './config.js';
 
 type Nullable<T> = T | null;
 
@@ -97,10 +96,7 @@ function getPseudoHeaderOrder(sentFrames: Array<Record<string, unknown>>): Pseud
   const headers = getHeadersFrameHeaders(sentFrames);
   const order = headers
     .map(parseHeaderLine)
-    .filter(
-      (header): header is [PseudoHeaderName, string] =>
-        header !== null && header[0].startsWith(':'),
-    )
+    .filter((header): header is [PseudoHeaderName, string] => header?.[0].startsWith(':') === true)
     .map(([name]) => name);
 
   return order.length > 0 ? order : [...defaultPseudoHeaderOrder];
@@ -248,9 +244,7 @@ function getHeadersId(sentFrames: Array<Record<string, unknown>>): number {
   return typeof frame?.stream_id === 'number' ? frame.stream_id : 1;
 }
 
-function getHeaderPriority(
-  sentFrames: Array<Record<string, unknown>>,
-): Nullable<HeaderPriority> {
+function getHeaderPriority(sentFrames: Array<Record<string, unknown>>): Nullable<HeaderPriority> {
   const frame = sentFrames.find((item) => item.frame_type === 'HEADERS' && isRecord(item.priority));
   if (!(frame && isRecord(frame.priority))) {
     return null;
@@ -259,9 +253,7 @@ function getHeaderPriority(
   return priorityFromCapturedFrame(frame.priority);
 }
 
-function getPriorityFrames(
-  sentFrames: Array<Record<string, unknown>>,
-): Nullable<PriorityFrame[]> {
+function getPriorityFrames(sentFrames: Array<Record<string, unknown>>): Nullable<PriorityFrame[]> {
   const frames = sentFrames
     .filter((frame) => frame.frame_type === 'PRIORITY' && isRecord(frame.priority))
     .map((frame) => ({

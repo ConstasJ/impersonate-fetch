@@ -5,3 +5,4 @@ dist/
 .opencode/
 openspec/
 docs/superpowers/
+!native/*

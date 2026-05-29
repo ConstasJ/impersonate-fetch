@@ -90,11 +90,13 @@ function findRepositoryRoot(fromDir: string): string {
     resolve(fromDir, '..', '..', '..', '..'),
   ];
 
-  return candidates.find((candidate) => existsSync(getDependenciesDir(candidate))) ?? candidates[0];
+  return (
+    candidates.find((candidate) => existsSync(resolve(candidate, 'package.json'))) ?? candidates[0]
+  );
 }
 
 function getDependenciesDir(root: string): string {
-  return resolve(root, 'requests-go', 'requests_go', 'tls_client', 'dependencies');
+  return resolve(root, 'native');
 }
 
 export const nativeAssetDependenciesDir = dependenciesDir;

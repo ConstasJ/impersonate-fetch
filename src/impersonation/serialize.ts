@@ -1,6 +1,6 @@
-import { NativeTransportError } from '../errors.js';
-import type { NativeRequestPayload } from '../native/abi.js';
-import type { TransportRequest } from '../transport/types.js';
+import { NativeTransportError } from '@/errors.js';
+import type { NativeRequestPayload } from '@/native/abi.js';
+import type { TransportRequest } from '@/transport/types.js';
 import { createTLSConfig } from './config.js';
 import { tlsConfigFromSnakeCase, tlsConfigToSnakeCase } from './convert.js';
 import { randomizeJa3 } from './fingerprint.js';

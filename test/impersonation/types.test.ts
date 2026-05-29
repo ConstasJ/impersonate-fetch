@@ -1,17 +1,15 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'vitest';
 
+import { createOrderedHeaderMetadata } from '@/impersonation/config.js';
+import { tlsConfigFromSnakeCase, tlsConfigToSnakeCase } from '@/impersonation/convert.js';
+import { randomizeJa3, tlsConfigFromBrowserFingerprint } from '@/impersonation/fingerprint.js';
 import {
-  createOrderedHeaderMetadata,
   getBrowserPreset,
   getTLSPreset,
-  randomizeJa3,
   TLS_CHROME_LATEST,
   TLS_FIREFOX_105,
-  tlsConfigFromBrowserFingerprint,
-  tlsConfigFromSnakeCase,
-  tlsConfigToSnakeCase,
-} from '../../dist/index.mjs';
+} from '@/impersonation/presets.js';
 
 const readmeTlsConfigFixture = {
   id: 'readme-example',

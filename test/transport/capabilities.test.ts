@@ -1,15 +1,10 @@
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { describe, it } from 'vitest';
-
-import {
-  assertCapability,
-  capabilityNames,
-  getCapabilities,
-  UnsupportedCapabilityError,
-} from '../../dist/index.mjs';
-import { nativeAbiSymbolNames } from '../../src/native/abi.ts';
-import type { TransportRequest } from '../../src/transport/types.ts';
+import { UnsupportedCapabilityError } from '@/errors.js';
+import { nativeAbiSymbolNames } from '@/native/abi.js';
+import { assertCapability, capabilityNames, getCapabilities } from '@/transport/capabilities.js';
+import type { TransportRequest } from '@/transport/types.js';
 
 describe('transport capabilities', () => {
   it('reports native request capabilities from asset and ABI evidence', () => {

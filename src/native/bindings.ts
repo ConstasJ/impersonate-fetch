@@ -6,7 +6,7 @@ import type {
 } from './abi.js';
 import { getNativeAssetInfo, type NativeAssetInfo } from './assets.js';
 import { NativeBindingLoadError } from './bindings-errors.js';
-import { tryCreateDirectBindings } from './bindings-loader.js';
+import { type NativeBindingLoaderOptions, tryCreateDirectBindings } from './bindings-loader.js';
 import { createShimBindings } from './bindings-shim.js';
 
 export type NativeBindingMode = 'direct' | 'requiresShim';
@@ -24,11 +24,17 @@ export interface NativeBindings {
 export interface NativeBindingOptions {
   readonly mode?: NativeBindingMode | 'auto';
   readonly asset?: NativeAssetInfo;
+  readonly ffiLoader?: NativeBindingLoaderOptions['ffiLoader'];
   readonly shimCommand?: string;
   readonly spawnProcess?: typeof import('node:child_process').spawn;
 }
 
-export { NativeBindingError, NativeBindingLoadError, NativeBindingProtocolError, NativeBindingNativeError } from './bindings-errors.js';
+export {
+  NativeBindingError,
+  NativeBindingLoadError,
+  NativeBindingNativeError,
+  NativeBindingProtocolError,
+} from './bindings-errors.js';
 
 let defaultBindings: NativeBindings | undefined;
 
@@ -36,17 +42,29 @@ export function createNativeBindings(options: NativeBindingOptions = {}): Native
   const asset = options.asset ?? getNativeAssetInfo();
   const requestedMode = options.mode ?? 'auto';
 
-  if (requestedMode !== 'requiresShim') {
-    const direct = tryCreateDirectBindings(asset);
+  if (requestedMode === 'direct') {
+    const direct = tryCreateDirectBindings(asset, { ffiLoader: options.ffiLoader });
 
-    if (direct || requestedMode === 'direct') {
-      if (!direct) {
-        throw new NativeBindingLoadError(
-          'Native FFI loader is unavailable or does not expose koffi Library()',
-        );
+    if (!direct) {
+      throw new NativeBindingLoadError(
+        'Native FFI loader is unavailable or does not expose load()/Library()',
+      );
+    }
+
+    return direct;
+  }
+
+  if (requestedMode === 'auto') {
+    try {
+      const direct = tryCreateDirectBindings(asset, { ffiLoader: options.ffiLoader });
+
+      if (direct) {
+        return direct;
       }
-
-      return direct;
+    } catch (error) {
+      if (!(error instanceof NativeBindingLoadError)) {
+        throw error;
+      }
     }
   }
 

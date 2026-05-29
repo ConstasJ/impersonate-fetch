@@ -1,17 +1,16 @@
-import * as koffi from 'koffi';
+/** biome-ignore-all lint/style/useNamingConvention: Native FFI mirrors Koffi and ABI symbol names. */
+import koffi from 'koffi';
 import type {
+  NativeAbiSymbolName,
   NativeRequestPayload,
   NativeResponsePayload,
   NativeStreamOpenPayload,
   NativeStreamReadPayload,
 } from './abi.js';
+import { nativeAbiKoffiSignatures } from './abi.js';
 import type { NativeAssetInfo } from './assets.js';
 import { NativeBindingLoadError } from './bindings-errors.js';
-import {
-  deserializePayload,
-  parseNativeResult,
-  serializePayload,
-} from './bindings-protocol.js';
+import { deserializePayload, parseNativeResult, serializePayload } from './bindings-protocol.js';
 
 export interface NativeBindingsDirect {
   readonly mode: 'direct';
@@ -24,40 +23,40 @@ export interface NativeBindingsDirect {
 }
 
 export interface NativeBindingLoaderOptions {
-  /** Optional koffi instance for testing */
-  readonly koffi?: typeof import('koffi');
+  /** Optional FFI loader for testing */
+  readonly ffiLoader?: NativeBindingLoader | (() => NativeBindingLoader);
+}
+
+export interface NativeBindingLoader {
+  load?(path: string): NativeKoffiLibrary;
+  Library?(path: string): NativeDirectLibrary;
+}
+
+interface NativeKoffiLibrary {
+  func(signature: string): unknown;
+}
+
+interface NativeDirectLibrary {
+  request(payload: string): string;
+  freeMemory(responseId: string): void;
+  freeSession?(sessionId: string): void;
+  stream_request(payload: string): string;
+  stream_read(streamId: string, size: number): string;
+  stream_close(streamId: string): void;
 }
 
 export function tryCreateDirectBindings(
   asset: NativeAssetInfo,
   options: NativeBindingLoaderOptions = {},
 ): NativeBindingsDirect | undefined {
-  // Use injected koffi for testing, otherwise use the imported module
-  const koffiInstance = options.koffi ?? koffi;
+  const ffiLoader = getNativeBindingLoader(options.ffiLoader);
 
-  if (!koffiInstance?.load) {
+  if (!(ffiLoader.load || ffiLoader.Library)) {
     return undefined;
   }
 
   try {
-    const lib = koffiInstance.load(asset.path);
-
-    // Define functions using koffi C-like syntax
-    const requestFn = lib.func('char *request(char *request_json)');
-    const freeMemoryFn = lib.func('void freeMemory(char *response_id)');
-    const freeSessionFn = lib.func('void freeSession(char *session_id)');
-    const streamRequestFn = lib.func('char *stream_request(char *request_json)');
-    const streamReadFn = lib.func('char *stream_read(char *stream_id, int size)');
-    const streamCloseFn = lib.func('void stream_close(char *stream_id)');
-
-    const library = {
-      request: requestFn as (payload: string) => string,
-      freeMemory: freeMemoryFn as (responseId: string) => void,
-      freeSession: freeSessionFn as (sessionId: string) => void,
-      stream_request: streamRequestFn as (payload: string) => string,
-      stream_read: streamReadFn as (streamId: string, size: number) => string,
-      stream_close: streamCloseFn as (streamId: string) => void,
-    };
+    const library = createDirectLibrary(ffiLoader, asset.path);
 
     return {
       mode: 'direct',
@@ -92,4 +91,50 @@ export function tryCreateDirectBindings(
   } catch (error) {
     throw new NativeBindingLoadError(`Failed to load native asset ${asset.path}`, { cause: error });
   }
+}
+
+function getNativeBindingLoader(
+  loader: NativeBindingLoaderOptions['ffiLoader'],
+): NativeBindingLoader {
+  if (typeof loader === 'function') {
+    return loader();
+  }
+
+  if (loader) {
+    return loader;
+  }
+
+  return {
+    load(path) {
+      return koffi.load(path) as NativeKoffiLibrary;
+    },
+  };
+}
+
+function createDirectLibrary(loader: NativeBindingLoader, assetPath: string): NativeDirectLibrary {
+  if (loader.Library) {
+    return loader.Library(assetPath);
+  }
+
+  if (!loader.load) {
+    throw new NativeBindingLoadError('Native FFI loader is unavailable');
+  }
+
+  const lib = loader.load(assetPath);
+
+  return {
+    request: bindKoffiFunction(lib, 'request') as (payload: string) => string,
+    freeMemory: bindKoffiFunction(lib, 'freeMemory') as (responseId: string) => void,
+    freeSession: bindKoffiFunction(lib, 'freeSession') as (sessionId: string) => void,
+    stream_request: bindKoffiFunction(lib, 'stream_request') as (payload: string) => string,
+    stream_read: bindKoffiFunction(lib, 'stream_read') as (
+      streamId: string,
+      size: number,
+    ) => string,
+    stream_close: bindKoffiFunction(lib, 'stream_close') as (streamId: string) => void,
+  };
+}
+
+function bindKoffiFunction(library: NativeKoffiLibrary, symbol: NativeAbiSymbolName): unknown {
+  return library.func(nativeAbiKoffiSignatures[symbol]);
 }

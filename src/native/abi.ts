@@ -24,6 +24,15 @@ export const nativeAbiSymbolNames = [
 
 export type NativeAbiSymbolName = (typeof nativeAbiSymbolNames)[number];
 
+export const nativeAbiKoffiSignatures = {
+  request: 'char *request(char *request_json)',
+  freeMemory: 'void freeMemory(char *response_id)',
+  freeSession: 'void freeSession(char *session_id)',
+  stream_request: 'char *stream_request(char *request_json)',
+  stream_read: 'char *stream_read(char *stream_id, int size)',
+  stream_close: 'void stream_close(char *stream_id)',
+} satisfies Record<NativeAbiSymbolName, string>;
+
 /**
  * Opaque pointer to a NUL-terminated UTF-8 C string at the FFI boundary.
  *

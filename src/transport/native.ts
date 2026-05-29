@@ -1,18 +1,17 @@
-import { NativeTransportError } from '../errors.js';
-import { serializeNativeRequest } from '../impersonation/serialize.js';
+import { serializeNativeRequest } from '@/impersonation/serialize.js';
 import type {
   NativeCookiePayload,
   NativeRequestPayload,
   NativeResponsePayload,
   NativeStreamOpenPayload,
-} from '../native/abi.js';
-import { NativeFfiClient } from '../native/ffi.js';
+} from '@/native/abi.js';
+import { NativeFfiClient } from '@/native/ffi.js';
 import {
   createRequestAbortController,
   type RequestAbortController,
   raceAbort,
   throwIfAborted,
-} from '../timeout.js';
+} from '@/timeout.js';
 import type {
   TransportBackend,
   TransportCookie,

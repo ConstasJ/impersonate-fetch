@@ -100,8 +100,7 @@ export class CookieJar {
       return;
     }
 
-    const path =
-      cookie.path && cookie.path.startsWith('/') ? cookie.path : defaultPath(requestUrl.pathname);
+    const path = cookie.path?.startsWith('/') ? cookie.path : defaultPath(requestUrl.pathname);
     const expiresAt = expiresToTime(cookie.expires);
     const key = cookieKey(normalizedDomain, path, cookie.name, hostOnly);
 
@@ -194,7 +193,7 @@ function pathMatches(requestPath: string, cookiePath: string): boolean {
 }
 
 function defaultPath(pathname: string): string {
-  if (!(pathname && pathname.startsWith('/'))) {
+  if (!pathname?.startsWith('/')) {
     return '/';
   }
   const lastSlash = pathname.lastIndexOf('/');

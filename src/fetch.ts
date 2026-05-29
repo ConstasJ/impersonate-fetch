@@ -158,7 +158,9 @@ function normalizeHeaders(headers: HeadersInit | undefined): {
     return { headers: output, order };
   }
   if (headers instanceof Headers) {
-    headers.forEach((value, name) => append(name, value));
+    headers.forEach((value, name) => {
+      append(name, value);
+    });
     return { headers: output, order };
   }
   if (Array.isArray(headers)) {

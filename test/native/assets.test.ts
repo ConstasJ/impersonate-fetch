@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { basename, relative } from 'node:path';
+import { basename, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it } from 'vitest';
 
 import {
   getNativeAssetInfo,
   NativeAssetNotFoundError,
   nativeAssetDependenciesDir,
-} from '../../src/native/assets.ts';
+} from '@/native/assets.js';
 
 const supportedAssets = [
   ['linux', 'x64', 'requests-go-amd64.so'],
@@ -18,17 +19,21 @@ const supportedAssets = [
   ['darwin', 'arm64', 'requests-go-arm64.dylib'],
 ] as const;
 
+const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
+
 describe('native-assets resolver', () => {
   for (const [platform, arch, filename] of supportedAssets) {
     it(`native-assets maps ${platform}/${arch} to ${filename}`, () => {
       const info = getNativeAssetInfo(platform, arch);
       const pathWithinDependencies = relative(nativeAssetDependenciesDir, info.path);
+      const dependenciesWithinPackage = relative(root, nativeAssetDependenciesDir);
 
       assert.equal(info.platform, platform);
       assert.equal(info.arch, arch);
       assert.equal(info.filename, filename);
       assert.equal(basename(info.path), filename);
       assert.equal(info.dependenciesDir, nativeAssetDependenciesDir);
+      assert.equal(dependenciesWithinPackage, 'native');
       assert.equal(pathWithinDependencies, filename);
       assert.equal(existsSync(info.path), true);
     });
