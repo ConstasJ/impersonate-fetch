@@ -7,3 +7,4 @@ openspec/
 docs/superpowers/
 !native/*
 refs/
+.worktrees/
