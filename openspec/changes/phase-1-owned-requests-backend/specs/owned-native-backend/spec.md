@@ -93,7 +93,7 @@ The system SHALL generate scoped platform-specific npm backend packages from com
 - **THEN** it contains JavaScript/TypeScript build output and metadata but does not directly bundle all platform backend binaries
 
 ### Requirement: GitHub Actions Matrix build support
-The system SHALL support parallel cross-platform builds via GitHub Actions Matrix for Linux (x64, ARM64), macOS (x64, ARM64), and Windows (x64).
+The system SHALL support parallel cross-platform builds via GitHub Actions Matrix for Linux (x64, x32, ARM64), macOS (x64, ARM64), and Windows (x64, x32, ARM64).
 
 #### Scenario: CI builds native artifacts for all platforms
 - **WHEN** the CI workflow triggers a native backend build
@@ -105,10 +105,13 @@ The system SHALL support parallel cross-platform builds via GitHub Actions Matri
 - **WHEN** contributors inspect the CI configuration
 - **THEN** they see matrix entries for:
   - `linux-x64`
+  - `linux-x32` (Linux 32-bit)
   - `linux-arm64`
   - `darwin-x64` (macOS Intel)
   - `darwin-arm64` (macOS Apple Silicon)
-  - `win32-x64` (Windows)
+  - `win32-x64` (Windows 64-bit)
+  - `win32-x32` (Windows 32-bit)
+  - `win32-arm64` (Windows ARM64)
 
 ### Requirement: Runtime backend resolution
 The Node package SHALL resolve the correct generated backend package for the current platform and architecture while preserving existing explicit backend path overrides.

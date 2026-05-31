@@ -79,7 +79,7 @@ Go remains built with ordinary Go commands; Nx wraps those commands, declares in
 
 #### Decision: Use GitHub Actions Matrix for cross-platform builds
 
-The CI SHALL use GitHub Actions Matrix strategy to build native artifacts in parallel for all supported platforms (Linux x64/ARM64, macOS x64/ARM64, Windows x64). Matrix builds ensure efficient use of CI time and clear separation of platform-specific build concerns.
+The CI SHALL use GitHub Actions Matrix strategy to build native artifacts in parallel for all supported platforms: Linux (x64, x32, ARM64), macOS (x64, ARM64), and Windows (x64, x32, ARM64). Matrix builds ensure efficient use of CI time and clear separation of platform-specific build concerns.
 
 Alternatives considered:
 
@@ -133,7 +133,7 @@ The `chttp` fork and future authorized patch stack SHALL be maintained outside t
 1. Add Go backend source at `packages/native-backend` that exports the existing C ABI and uses `wangluozhe/requests` internally.
 2. Convert the repository into an Nx-managed pnpm monorepo with projects at `packages/impersonated-fetch` (JS package), `packages/native-backend` (Go backend), and native package generation workflow.
 3. Add local build tasks for the host platform, then expand to the supported platform matrix.
-4. Set up GitHub Actions Matrix for parallel cross-platform builds (Linux x64/ARM64, macOS x64/ARM64, Windows x64).
+4. Set up GitHub Actions Matrix for parallel cross-platform builds (Linux x64/x32/ARM64, macOS x64/ARM64, Windows x64/x32/ARM64).
 5. Add ABI contract tests against the self-built backend.
 6. Add differential oracle tests comparing the self-built backend with the existing closed backend.
 7. Add generated scoped native package artifacts and package validation.

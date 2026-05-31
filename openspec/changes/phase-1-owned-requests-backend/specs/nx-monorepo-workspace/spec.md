@@ -41,7 +41,7 @@ The monorepo SHALL define exactly one source-maintained Go backend project locat
 - **THEN** they can see that Phase 2 removes `wangluozhe/requests` from the same backend lineage rather than introducing a second production backend
 
 ### Requirement: GitHub Actions Matrix for cross-platform builds
-The system SHALL use GitHub Actions Matrix strategy to build the Go native backend in parallel across all supported platforms (Linux x64/ARM64, macOS x64/ARM64, Windows x64).
+The system SHALL use GitHub Actions Matrix strategy to build the Go native backend in parallel across all supported platforms: Linux (x64, x32, ARM64), macOS (x64, ARM64), and Windows (x64, x32, ARM64).
 
 #### Scenario: CI builds all platform targets
 - **WHEN** the CI workflow runs for the Go backend

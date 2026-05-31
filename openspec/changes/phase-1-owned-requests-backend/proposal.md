@@ -13,7 +13,7 @@ The current native layer depends on closed, prebuilt `requests-go`-style Go arti
   - `packages/native-backend` - unified Go backend source
   - release-time native package generation tasks
 - Add release-time generation for scoped platform backend npm packages, following the esbuild/swc optional native package model.
-- Use GitHub Actions Matrix for parallel cross-platform builds (Linux x64/ARM64, macOS x64/ARM64, Windows x64).
+- Use GitHub Actions Matrix for parallel cross-platform builds (Linux x64/x32/ARM64, macOS x64/ARM64, Windows x64/x32/ARM64).
 - Keep the public `impersonated-fetch` npm package pure JavaScript/TypeScript and load platform backend packages at runtime.
 - Add ABI contract and differential oracle tests comparing the self-built backend with the current closed native binary.
 - Preserve the current Node-facing request/stream/free-memory protocol in Phase 1; no Fetch API breaking changes are intended.
@@ -35,7 +35,7 @@ The current native layer depends on closed, prebuilt `requests-go`-style Go arti
   - Adding Go backend at `packages/native-backend`
   - Introducing Nx project graph configuration for all packages
 - Introduces Go source and build tooling into the repository.
-- Introduces scoped platform backend npm package artifacts such as `@impersonated-fetch/backend-linux-x64` and `@impersonated-fetch/backend-darwin-arm64`.
+- Introduces scoped platform backend npm package artifacts such as `@impersonated-fetch/backend-linux-x64`, `@impersonated-fetch/backend-linux-x32`, `@impersonated-fetch/backend-linux-arm64`, `@impersonated-fetch/backend-darwin-x64`, `@impersonated-fetch/backend-darwin-arm64`, `@impersonated-fetch/backend-win32-x64`, `@impersonated-fetch/backend-win32-x32`, and `@impersonated-fetch/backend-win32-arm64`.
 - Uses GitHub Actions Matrix for parallel cross-platform native builds.
 - Keeps `wangluozhe/requests` as a transitional Phase 1 backend dependency only; Phase 2 will refactor the same backend lineage toward direct `chttp` usage.
 - Requires an explicit license/shipping decision for Phase 1 use of `wangluozhe/requests` before public release.
