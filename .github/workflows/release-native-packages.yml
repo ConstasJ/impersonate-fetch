@@ -3,12 +3,17 @@ name: Release native backend packages
 on:
   workflow_dispatch:
     inputs:
+      native_run_id:
+        description: Successful Native backend workflow run id to consume
+        required: true
+        type: string
       license_approval:
         description: Type approved after recording Phase 1 license/shipping approval
         required: true
         type: string
 
 permissions:
+  actions: read
   contents: read
 
 jobs:
@@ -47,6 +52,8 @@ jobs:
       - name: Download matrix native artifacts
         uses: actions/download-artifact@v4
         with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.native_run_id }}
           pattern: native-backend-*
           path: packages/native-backend/dist/release-artifacts
           merge-multiple: true

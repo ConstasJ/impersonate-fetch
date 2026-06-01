@@ -2,10 +2,27 @@ name: Native backend
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/native-backend.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'nx.json'
+      - 'packages/native-backend/**'
+      - 'packages/impersonated-fetch/package.json'
+      - 'packages/impersonated-fetch/src/native/**'
   pull_request:
     paths:
       - '.github/workflows/native-backend.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'nx.json'
       - 'packages/native-backend/**'
+      - 'packages/impersonated-fetch/package.json'
       - 'packages/impersonated-fetch/src/native/**'
 
 permissions:
@@ -30,7 +47,7 @@ jobs:
             apt: gcc-aarch64-linux-gnu
             cc: aarch64-linux-gnu-gcc
           - target: darwin-x64
-            os: macos-13
+            os: macos-15-intel
           - target: darwin-arm64
             os: macos-14
           - target: win32-x64
