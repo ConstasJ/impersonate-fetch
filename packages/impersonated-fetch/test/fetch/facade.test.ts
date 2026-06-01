@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'vitest';
 
 import { fetch } from '@/fetch.js';
-import { getCapabilities } from '@/transport/capabilities.js';
+import { nativeAbiSymbolNames } from '@/native/abi.js';
+import type { TransportCapabilities } from '@/transport/capabilities.js';
 import type {
   TransportBackend,
   TransportRequest,
@@ -11,7 +12,30 @@ import type {
 } from '@/transport/types.js';
 import type { FetchInit } from '@/types.js';
 
-const capabilities = getCapabilities({ platform: 'linux', arch: 'x64' });
+const capabilities: TransportCapabilities = {
+  backend: 'native',
+  platformName: 'linux',
+  arch: 'x64',
+  nativeAssetPath: '/fixture/impersonated-fetch-backend-linux-x64.so',
+  nativeAssetFilename: 'impersonated-fetch-backend-linux-x64.so',
+  nativeAbiSymbols: nativeAbiSymbolNames,
+  platform: true,
+  nativeBinary: true,
+  http1_1: true,
+  http2: true,
+  ja3: true,
+  ja4: false,
+  browserPresets: true,
+  customClientHello: true,
+  customHttp2Settings: true,
+  orderedHeaders: true,
+  proxy: true,
+  cookies: true,
+  streamingUpload: false,
+  streamingResponse: true,
+  redirects: true,
+  abortSignal: true,
+};
 
 describe('fetch-facade', () => {
   it('fetch-facade text() decodes response body and rejects reuse', async () => {

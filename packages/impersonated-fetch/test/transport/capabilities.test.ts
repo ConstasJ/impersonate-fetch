@@ -1,47 +1,72 @@
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { resolve } from 'node:path';
 import { describe, it } from 'vitest';
 import { UnsupportedCapabilityError } from '@/errors.js';
 import { nativeAbiSymbolNames } from '@/native/abi.js';
+import type { TransportCapabilities } from '@/transport/capabilities.js';
 import { assertCapability, capabilityNames, getCapabilities } from '@/transport/capabilities.js';
 import type { TransportRequest } from '@/transport/types.js';
 
 describe('transport capabilities', () => {
   it('reports native request capabilities from asset and ABI evidence', () => {
-    const capabilities = getCapabilities({ platform: 'linux', arch: 'x64' });
+    const fixture = createLinuxX64BackendPackageRoot();
 
-    assert.equal(capabilities.backend, 'native');
-    assert.equal(capabilities.platformName, 'linux');
-    assert.equal(capabilities.arch, 'x64');
-    assert.equal(capabilities.nativeAssetFilename, 'requests-go-amd64.so');
-    assert.equal(capabilities.nativeAssetPath && existsSync(capabilities.nativeAssetPath), true);
-    assert.deepEqual(capabilities.nativeAbiSymbols, nativeAbiSymbolNames);
+    try {
+      const capabilities = getCapabilities({
+        platform: 'linux',
+        arch: 'x64',
+        root: fixture.packageRoot,
+        sourceBuilt: false,
+      });
 
-    for (const capability of capabilityNames) {
-      assert.equal(typeof capabilities[capability], 'boolean', capability);
+      assert.equal(capabilities.backend, 'native');
+      assert.equal(capabilities.platformName, 'linux');
+      assert.equal(capabilities.arch, 'x64');
+      assert.equal(capabilities.nativeAssetFilename, 'impersonated-fetch-backend-linux-x64.so');
+      assert.equal(capabilities.nativeAssetPath && existsSync(capabilities.nativeAssetPath), true);
+      assert.deepEqual(capabilities.nativeAbiSymbols, nativeAbiSymbolNames);
+
+      for (const capability of capabilityNames) {
+        assert.equal(typeof capabilities[capability], 'boolean', capability);
+      }
+
+      assert.equal(capabilities.platform, true);
+      assert.equal(capabilities.nativeBinary, true);
+      assert.equal(capabilities.http1_1, true);
+      assert.equal(capabilities.http2, true);
+      assert.equal(capabilities.ja3, true);
+      assert.equal(capabilities.browserPresets, true);
+      assert.equal(capabilities.customClientHello, true);
+      assert.equal(capabilities.customHttp2Settings, true);
+      assert.equal(capabilities.orderedHeaders, true);
+      assert.equal(capabilities.proxy, true);
+      assert.equal(capabilities.cookies, true);
+      assert.equal(capabilities.streamingResponse, true);
+      assert.equal(capabilities.redirects, true);
+    } finally {
+      rmSync(fixture.tempRoot, { recursive: true, force: true });
     }
-
-    assert.equal(capabilities.platform, true);
-    assert.equal(capabilities.nativeBinary, true);
-    assert.equal(capabilities.http1_1, true);
-    assert.equal(capabilities.http2, true);
-    assert.equal(capabilities.ja3, true);
-    assert.equal(capabilities.browserPresets, true);
-    assert.equal(capabilities.customClientHello, true);
-    assert.equal(capabilities.customHttp2Settings, true);
-    assert.equal(capabilities.orderedHeaders, true);
-    assert.equal(capabilities.proxy, true);
-    assert.equal(capabilities.cookies, true);
-    assert.equal(capabilities.streamingResponse, true);
-    assert.equal(capabilities.redirects, true);
   });
 
   it('does not mark unsupported capabilities true without native evidence', () => {
-    const capabilities = getCapabilities({ platform: 'linux', arch: 'x64' });
+    const fixture = createLinuxX64BackendPackageRoot();
 
-    assert.equal(capabilities.ja4, false);
-    assert.equal(capabilities.streamingUpload, false);
-    assert.equal(capabilities.abortSignal, false);
+    try {
+      const capabilities = getCapabilities({
+        platform: 'linux',
+        arch: 'x64',
+        root: fixture.packageRoot,
+        sourceBuilt: false,
+      });
+
+      assert.equal(capabilities.ja4, false);
+      assert.equal(capabilities.streamingUpload, false);
+      assert.equal(capabilities.abortSignal, false);
+    } finally {
+      rmSync(fixture.tempRoot, { recursive: true, force: true });
+    }
   });
 
   it('reports all capabilities unsupported when no native asset is available', () => {
@@ -83,7 +108,20 @@ describe('transport capabilities', () => {
       },
     };
 
-    assert.doesNotThrow(() => assertCapability(request, { platform: 'linux', arch: 'x64' }));
+    const fixture = createLinuxX64BackendPackageRoot();
+
+    try {
+      assert.doesNotThrow(() =>
+        assertCapability(request, {
+          platform: 'linux',
+          arch: 'x64',
+          root: fixture.packageRoot,
+          sourceBuilt: false,
+        }),
+      );
+    } finally {
+      rmSync(fixture.tempRoot, { recursive: true, force: true });
+    }
   });
 
   it('throws UnsupportedCapabilityError with backend, capability, platform, and option', () => {
@@ -91,7 +129,7 @@ describe('transport capabilities', () => {
       () =>
         assertCapability(
           { url: 'https://example.test/', signal: AbortSignal.timeout(1) },
-          { platform: 'linux', arch: 'x64' },
+          nativeLinuxX64Capabilities(),
         ),
       (error) => {
         assert.equal(error instanceof UnsupportedCapabilityError, true);
@@ -113,11 +151,7 @@ describe('transport capabilities', () => {
     });
 
     assert.throws(
-      () =>
-        assertCapability(
-          { url: 'https://example.test/', body },
-          { platform: 'linux', arch: 'x64' },
-        ),
+      () => assertCapability({ url: 'https://example.test/', body }, nativeLinuxX64Capabilities()),
       (error) => {
         assert.equal(error instanceof UnsupportedCapabilityError, true);
         assert.equal((error as UnsupportedCapabilityError).capability, 'streamingUpload');
@@ -143,3 +177,53 @@ describe('transport capabilities', () => {
     );
   });
 });
+
+function createLinuxX64BackendPackageRoot(): { tempRoot: string; packageRoot: string } {
+  const tempRoot = mkdtempSync(resolve(tmpdir(), 'impersonated-fetch-capabilities-'));
+  const packageRoot = resolve(tempRoot, 'impersonated-fetch');
+  const backendPackageRoot = resolve(
+    packageRoot,
+    'node_modules',
+    '@impersonated-fetch',
+    'backend-linux-x64',
+  );
+
+  mkdirSync(backendPackageRoot, { recursive: true });
+  writeFileSync(resolve(packageRoot, 'package.json'), '{"type":"module"}\n');
+  writeFileSync(
+    resolve(backendPackageRoot, 'package.json'),
+    '{"name":"@impersonated-fetch/backend-linux-x64"}\n',
+  );
+  writeFileSync(resolve(backendPackageRoot, 'impersonated-fetch-backend-linux-x64.so'), 'fixture');
+
+  return { tempRoot, packageRoot };
+}
+
+function nativeLinuxX64Capabilities(): { capabilities: TransportCapabilities } {
+  return {
+    capabilities: {
+      backend: 'native',
+      platformName: 'linux',
+      arch: 'x64',
+      nativeAssetPath: '/fixture/impersonated-fetch-backend-linux-x64.so',
+      nativeAssetFilename: 'impersonated-fetch-backend-linux-x64.so',
+      nativeAbiSymbols: nativeAbiSymbolNames,
+      platform: true,
+      nativeBinary: true,
+      http1_1: true,
+      http2: true,
+      ja3: true,
+      ja4: false,
+      browserPresets: true,
+      customClientHello: true,
+      customHttp2Settings: true,
+      orderedHeaders: true,
+      proxy: true,
+      cookies: true,
+      streamingUpload: false,
+      streamingResponse: true,
+      redirects: true,
+      abortSignal: false,
+    },
+  };
+}
