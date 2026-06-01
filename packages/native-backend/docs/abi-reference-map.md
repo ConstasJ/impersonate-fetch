@@ -1,11 +1,10 @@
 # Phase 1 ABI reference map
 
-Current source status: `refs/psuedocodes/` is not checked in to this worktree.
+Current source status: `refs/psuedocodes/` is checked in to this worktree.
 
-This map records the Phase 1 wrapper references named by the OpenSpec design and keeps the
-missing reference material visible to implementers. Do not implement parity-sensitive wrapper
-behavior from memory; use this map as the checklist once the pseudocode files are restored, and
-treat runnable contract or differential tests as authoritative if they disagree with pseudocode.
+This map records the Phase 1 wrapper references named by the OpenSpec design. Use the
+checked-in pseudocode files as the wrapper lifecycle checklist, and treat runnable contract or
+differential tests as authoritative if they disagree with pseudocode.
 
 | ABI behavior | Expected pseudocode reference | Observable behavior to verify |
 | --- | --- | --- |
@@ -17,11 +16,10 @@ treat runnable contract or differential tests as authoritative if they disagree 
 | `request construction` | `refs/psuedocodes/main.buildRequest.c` | Translate `NativeRequestPayload` fields into the transitional `wangluozhe/requests` request object without requiring Node-side schema changes. |
 | `session behavior` | `refs/psuedocodes/main.GetSession.c` | Resolve or create session state from payload `Id` and preserve existing lifecycle behavior until `freeSession` semantics are verified. |
 
-## Missing-reference handling
+## Reference handling
 
 - The expected path spelling is `refs/psuedocodes/` because the OpenSpec artifacts use that path.
-- If the extracted files are added later, update this map with concrete notes from each file before
-  marking the corresponding ABI implementation tasks complete.
-- Until those files are available, implementation work must be limited to behavior covered by local
-  contract tests, differential tests, or the TypeScript ABI contract in
-  `packages/impersonated-fetch/src/native/abi.ts`.
+- The checked-in wrappers manage response C strings by response `id`, stream metadata by
+  `stream_id`, and stream reads by `${stream_id}_read`.
+- Implementation work must keep local contract tests aligned with the pseudocode files and the
+  TypeScript ABI contract in `packages/impersonated-fetch/src/native/abi.ts`.

@@ -23,11 +23,12 @@ test('documents pseudocode references for every Phase 1 ABI behavior', async () 
   }
 });
 
-test('records missing checked-in pseudocode files explicitly', async () => {
+test('records checked-in pseudocode source status explicitly', async () => {
   const map = await readFile(referenceMapPath, 'utf8');
 
-  assert.match(map, /Current source status: `refs\/psuedocodes\/` is not checked in/);
-  assert.match(map, /Do not implement parity-sensitive wrapper\s+behavior from memory/);
+  assert.match(map, /Current source status: `refs\/psuedocodes\/` is checked in/);
+  assert.match(map, /Use the\s+checked-in pseudocode files as the wrapper lifecycle checklist/);
+  assert.doesNotMatch(map, /not checked in/);
 });
 
 function escapeRegExp(value) {
