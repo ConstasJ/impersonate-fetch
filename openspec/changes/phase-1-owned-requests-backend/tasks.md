@@ -12,9 +12,9 @@
 
 - [x] 2.1 Create an implementation reference map from `refs/psuedocodes/*.c` to each exported Phase 1 ABI function
 - [x] 2.2 Implement exported `request` symbol in Go using the existing `NativeRequestPayload` JSON contract and `main.request.c` / `main.buildRequest.c` as behavioral references
-- [ ] 2.3 Implement exported `stream_request` symbol with current stream metadata response shape using `main.streamRequest.c` as behavioral reference
-- [ ] 2.4 Implement exported `stream_read` symbol with base64 chunk, previous-read cleanup, and EOF semantics using `main.streamRead.c` as behavioral reference
-- [ ] 2.5 Implement exported `stream_close` symbol with response body, stream pool, and pointer cleanup using `main.streamClose.c` as behavioral reference
+- [x] 2.3 Implement exported `stream_request` symbol with current stream metadata response shape using `main.streamRequest.c` as behavioral reference
+- [x] 2.4 Implement exported `stream_read` symbol with base64 chunk, previous-read cleanup, and EOF semantics using `main.streamRead.c` as behavioral reference
+- [x] 2.5 Implement exported `stream_close` symbol with response body, stream pool, and pointer cleanup using `main.streamClose.c` as behavioral reference
 - [ ] 2.6 Implement exported `freeMemory` symbol with response-id-based C string cleanup using `main.freeMemory.c` as behavioral reference
 - [ ] 2.7 Preserve current error JSON/message compatibility for request construction, transport, stream, and marshal failures
 
