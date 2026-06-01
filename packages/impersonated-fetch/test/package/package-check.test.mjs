@@ -173,6 +173,7 @@ function validateResolver(module, label) {
       platform: expected.platform,
       arch: expected.arch,
       sourceBuilt: false,
+      backendPackages: false,
     });
 
     assert.equal(info.nativeAssetFilename, filename, `${label} resolver filename mismatch`);

@@ -96,4 +96,115 @@ describe('native-assets resolver', () => {
       rmSync(tempRoot, { recursive: true, force: true });
     }
   });
+
+  it('native-assets resolves scoped backend package before bundled fallback', () => {
+    const tempRoot = mkdtempSync(resolve(tmpdir(), 'impersonated-fetch-assets-'));
+
+    try {
+      const packageRoot = resolve(tempRoot, 'impersonated-fetch');
+      const fallbackDir = resolve(packageRoot, 'native');
+      const scopedPackageDir = resolve(
+        packageRoot,
+        'node_modules',
+        '@impersonated-fetch',
+        'backend-win32-x64',
+      );
+      const sourceFilename = 'impersonated-fetch-backend-win32-x64.dll';
+
+      mkdirSync(fallbackDir, { recursive: true });
+      mkdirSync(scopedPackageDir, { recursive: true });
+      writeFileSync(resolve(packageRoot, 'package.json'), '{"type":"module"}\n');
+      writeFileSync(resolve(fallbackDir, 'requests-go-win64.dll'), 'closed-backend');
+      writeFileSync(
+        resolve(scopedPackageDir, 'package.json'),
+        '{"name":"@impersonated-fetch/backend-win32-x64"}\n',
+      );
+      writeFileSync(resolve(scopedPackageDir, sourceFilename), 'scoped-backend');
+
+      const info = getNativeAssetInfo('win32', 'x64', { root: packageRoot });
+
+      assert.equal(info.filename, sourceFilename);
+      assert.equal(info.dependenciesDir, scopedPackageDir);
+      assert.equal(basename(info.path), sourceFilename);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it('native-assets can skip scoped backend packages for bundled fallback validation', () => {
+    const tempRoot = mkdtempSync(resolve(tmpdir(), 'impersonated-fetch-assets-'));
+
+    try {
+      const packageRoot = resolve(tempRoot, 'impersonated-fetch');
+      const fallbackDir = resolve(packageRoot, 'native');
+      const scopedPackageDir = resolve(
+        packageRoot,
+        'node_modules',
+        '@impersonated-fetch',
+        'backend-win32-x64',
+      );
+      const fallbackFilename = 'requests-go-win64.dll';
+
+      mkdirSync(fallbackDir, { recursive: true });
+      mkdirSync(scopedPackageDir, { recursive: true });
+      writeFileSync(resolve(packageRoot, 'package.json'), '{"type":"module"}\n');
+      writeFileSync(resolve(fallbackDir, fallbackFilename), 'closed-backend');
+      writeFileSync(
+        resolve(scopedPackageDir, 'package.json'),
+        '{"name":"@impersonated-fetch/backend-win32-x64"}\n',
+      );
+      writeFileSync(
+        resolve(scopedPackageDir, 'impersonated-fetch-backend-win32-x64.dll'),
+        'scoped-backend',
+      );
+
+      const info = getNativeAssetInfo('win32', 'x64', {
+        root: packageRoot,
+        backendPackages: false,
+        sourceBuilt: false,
+      });
+
+      assert.equal(info.filename, fallbackFilename);
+      assert.equal(info.dependenciesDir, fallbackDir);
+      assert.equal(basename(info.path), fallbackFilename);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it('native-assets reports a clear error when an installed scoped backend package lacks its asset', () => {
+    const tempRoot = mkdtempSync(resolve(tmpdir(), 'impersonated-fetch-assets-'));
+
+    try {
+      const packageRoot = resolve(tempRoot, 'impersonated-fetch');
+      const fallbackDir = resolve(packageRoot, 'native');
+      const scopedPackageDir = resolve(
+        packageRoot,
+        'node_modules',
+        '@impersonated-fetch',
+        'backend-win32-x64',
+      );
+
+      mkdirSync(fallbackDir, { recursive: true });
+      mkdirSync(scopedPackageDir, { recursive: true });
+      writeFileSync(resolve(packageRoot, 'package.json'), '{"type":"module"}\n');
+      writeFileSync(resolve(fallbackDir, 'requests-go-win64.dll'), 'closed-backend');
+      writeFileSync(
+        resolve(scopedPackageDir, 'package.json'),
+        '{"name":"@impersonated-fetch/backend-win32-x64"}\n',
+      );
+
+      assert.throws(
+        () => getNativeAssetInfo('win32', 'x64', { root: packageRoot }),
+        (error) => {
+          assert.equal(error instanceof NativeAssetNotFoundError, true);
+          assert.match(String(error), /@impersonated-fetch\/backend-win32-x64/);
+          assert.match(String(error), /impersonated-fetch-backend-win32-x64\.dll is missing/);
+          return true;
+        },
+      );
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
 });

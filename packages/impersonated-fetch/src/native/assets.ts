@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,12 +17,17 @@ export interface NativeAssetInfo {
 export interface NativeAssetResolverOptions {
   readonly root?: string;
   readonly sourceBuilt?: boolean;
+  readonly backendPackages?: boolean;
 }
 
 interface NativeAssetMapping {
   platform: NativePlatform;
   arch: NativeArchitecture;
   filename: string;
+}
+
+interface BackendPackageMapping extends NativeAssetMapping {
+  packageName: string;
 }
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
@@ -46,6 +52,57 @@ const sourceBuiltNativeAssetMappings: readonly NativeAssetMapping[] = [
   { platform: 'win32', arch: 'x64', filename: 'impersonated-fetch-backend-win32-x64.dll' },
   { platform: 'win32', arch: 'ia32', filename: 'impersonated-fetch-backend-win32-x32.dll' },
   { platform: 'win32', arch: 'arm64', filename: 'impersonated-fetch-backend-win32-arm64.dll' },
+];
+
+const backendPackageMappings: readonly BackendPackageMapping[] = [
+  {
+    platform: 'linux',
+    arch: 'x64',
+    filename: 'impersonated-fetch-backend-linux-x64.so',
+    packageName: '@impersonated-fetch/backend-linux-x64',
+  },
+  {
+    platform: 'linux',
+    arch: 'ia32',
+    filename: 'impersonated-fetch-backend-linux-x32.so',
+    packageName: '@impersonated-fetch/backend-linux-x32',
+  },
+  {
+    platform: 'linux',
+    arch: 'arm64',
+    filename: 'impersonated-fetch-backend-linux-arm64.so',
+    packageName: '@impersonated-fetch/backend-linux-arm64',
+  },
+  {
+    platform: 'darwin',
+    arch: 'x64',
+    filename: 'impersonated-fetch-backend-darwin-x64.dylib',
+    packageName: '@impersonated-fetch/backend-darwin-x64',
+  },
+  {
+    platform: 'darwin',
+    arch: 'arm64',
+    filename: 'impersonated-fetch-backend-darwin-arm64.dylib',
+    packageName: '@impersonated-fetch/backend-darwin-arm64',
+  },
+  {
+    platform: 'win32',
+    arch: 'x64',
+    filename: 'impersonated-fetch-backend-win32-x64.dll',
+    packageName: '@impersonated-fetch/backend-win32-x64',
+  },
+  {
+    platform: 'win32',
+    arch: 'ia32',
+    filename: 'impersonated-fetch-backend-win32-x32.dll',
+    packageName: '@impersonated-fetch/backend-win32-x32',
+  },
+  {
+    platform: 'win32',
+    arch: 'arm64',
+    filename: 'impersonated-fetch-backend-win32-arm64.dll',
+    packageName: '@impersonated-fetch/backend-win32-arm64',
+  },
 ];
 
 export class NativeAssetNotFoundError extends Error {
@@ -75,6 +132,15 @@ export function getNativeAssetInfo(
 
   if (sourceBuiltAsset) {
     return sourceBuiltAsset;
+  }
+
+  const packageAsset =
+    options.backendPackages === false
+      ? undefined
+      : resolveBackendPackageAsset(root, platform, arch);
+
+  if (packageAsset) {
+    return packageAsset;
   }
 
   const fallbackDependenciesDir = getDependenciesDir(root);
@@ -118,6 +184,47 @@ export function getNativeAssetInfo(
     path: assetPath,
     dependenciesDir: fallbackDependenciesDir,
   };
+}
+
+function resolveBackendPackageAsset(
+  root: string,
+  platform: NativePlatform,
+  arch: NativeArchitecture,
+): NativeAssetInfo | undefined {
+  const mapping = backendPackageMappings.find(
+    (asset) => asset.platform === platform && asset.arch === arch,
+  );
+
+  if (!mapping) {
+    return undefined;
+  }
+
+  const packageRoot = findBackendPackageRoot(root, mapping.packageName);
+
+  if (!packageRoot) {
+    return undefined;
+  }
+
+  const asset = resolveNativeAsset(packageRoot, [mapping], platform, arch);
+
+  if (!asset) {
+    throw new NativeAssetNotFoundError(
+      platform,
+      arch,
+      `${mapping.packageName} is installed but ${mapping.filename} is missing`,
+    );
+  }
+
+  return asset;
+}
+
+function findBackendPackageRoot(root: string, packageName: string): string | undefined {
+  try {
+    const requireFromRoot = createRequire(resolve(root, 'package.json'));
+    return dirname(requireFromRoot.resolve(`${packageName}/package.json`));
+  } catch {
+    return undefined;
+  }
 }
 
 function resolveNativeAsset(
@@ -183,3 +290,4 @@ export const nativeAssetFilenames = nativeAssetMappings.map((asset) => asset.fil
 export const sourceBuiltNativeAssetFilenames = sourceBuiltNativeAssetMappings.map(
   (asset) => asset.filename,
 );
+export const backendPackageNames = backendPackageMappings.map((asset) => asset.packageName);
