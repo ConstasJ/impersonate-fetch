@@ -12,13 +12,18 @@ import (
 	"unsafe"
 
 	"github.com/ConstasJ/impersonated-fetch/packages/native-backend/internal/compat"
+	"github.com/ConstasJ/impersonated-fetch/packages/native-backend/internal/requestabi"
 )
 
 var responsePointers sync.Map
 
 //export request
 func request(requestJSON *C.char) *C.char {
-	return storeResponse(compat.StubID(), compat.UnsupportedRequestResponse("request"))
+	payload, id := requestabi.HandleRequestJSON(C.GoString(requestJSON))
+	if id == "" {
+		return C.CString(payload)
+	}
+	return storeResponse(id, payload)
 }
 
 //export stream_request
@@ -45,7 +50,9 @@ func freeMemory(responseID *C.char) {
 }
 
 //export freeSession
-func freeSession(sessionID *C.char) {}
+func freeSession(sessionID *C.char) {
+	requestabi.FreeSession(C.GoString(sessionID))
+}
 
 func storeResponse(id string, payload string) *C.char {
 	freeStoredResponse(id)
