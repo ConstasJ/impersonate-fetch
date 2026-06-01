@@ -55,16 +55,19 @@ jobs:
             msystem: UCRT64
             msys-package: mingw-w64-ucrt-x86_64-gcc
             msys-path: C:\msys64\ucrt64\bin
+            cc: C:\msys64\ucrt64\bin\gcc.exe
           - target: win32-x32
             os: windows-latest
             msystem: MINGW32
             msys-package: mingw-w64-i686-gcc
             msys-path: C:\msys64\mingw32\bin
+            cc: C:\msys64\mingw32\bin\gcc.exe
           - target: win32-arm64
             os: windows-latest
             msystem: CLANGARM64
             msys-package: mingw-w64-clang-aarch64-clang
             msys-path: C:\msys64\clangarm64\bin
+            cc: C:\msys64\clangarm64\bin\clang.exe
 
     steps:
       - name: Checkout
