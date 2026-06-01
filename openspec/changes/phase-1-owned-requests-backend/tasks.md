@@ -21,9 +21,9 @@
 ## 3. Node Loader and Backend Resolution
 
 - [x] 3.1 Add source-built backend asset discovery without removing current native asset fallback
-- [ ] 3.2 Add scoped platform backend package resolution for `@impersonated-fetch/backend-*` packages
-- [ ] 3.3 Preserve explicit backend path and shim command override behavior
-- [ ] 3.4 Ensure missing backend packages fail with clear native asset errors and no silent degradation
+- [x] 3.2 Add scoped platform backend package resolution for `@impersonated-fetch/backend-*` packages
+- [x] 3.3 Preserve explicit backend path and shim command override behavior
+- [x] 3.4 Ensure missing backend packages fail with clear native asset errors and no silent degradation
 
 ## 4. Contract and Differential Tests
 
