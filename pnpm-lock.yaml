@@ -23,31 +23,6 @@ importers:
       zod:
         specifier: ^4.4.3
         version: 4.4.3
-    optionalDependencies:
-      '@impersonated-fetch/backend-darwin-arm64':
-        specifier: 0.0-development
-        version: 0.0-development
-      '@impersonated-fetch/backend-darwin-x64':
-        specifier: 0.0-development
-        version: 0.0-development
-      '@impersonated-fetch/backend-linux-arm64':
-        specifier: 0.0-development
-        version: 0.0-development
-      '@impersonated-fetch/backend-linux-x32':
-        specifier: 0.0-development
-        version: 0.0-development
-      '@impersonated-fetch/backend-linux-x64':
-        specifier: 0.0-development
-        version: 0.0-development
-      '@impersonated-fetch/backend-win32-arm64':
-        specifier: 0.0-development
-        version: 0.0-development
-      '@impersonated-fetch/backend-win32-x32':
-        specifier: 0.0-development
-        version: 0.0-development
-      '@impersonated-fetch/backend-win32-x64':
-        specifier: 0.0-development
-        version: 0.0-development
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.4.16

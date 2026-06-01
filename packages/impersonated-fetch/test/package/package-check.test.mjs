@@ -6,6 +6,12 @@ import { resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { describe, it } from 'vitest';
 
+import {
+  applyPrepackMetadata,
+  backendPackageNames,
+  restorePostpackMetadata,
+} from '../../scripts/package-metadata.mjs';
+
 const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const requireFromHere = createRequire(import.meta.url);
 const npmPackInvocation =
@@ -16,23 +22,19 @@ const npmPackInvocation =
       }
     : { command: 'npm', args: ['pack', '--dry-run', '--json'] };
 
-const expectedBackendPackages = [
-  '@impersonated-fetch/backend-darwin-arm64',
-  '@impersonated-fetch/backend-darwin-x64',
-  '@impersonated-fetch/backend-linux-arm64',
-  '@impersonated-fetch/backend-linux-x32',
-  '@impersonated-fetch/backend-linux-x64',
-  '@impersonated-fetch/backend-win32-arm64',
-  '@impersonated-fetch/backend-win32-x32',
-  '@impersonated-fetch/backend-win32-x64',
-];
+const expectedBackendPackages = [...backendPackageNames].sort();
 
 describe('package contents', () => {
   it('package contents include built entrypoints and exclude native backend binaries', () => {
-    const result = execFileSync(npmPackInvocation.command, npmPackInvocation.args, {
-      cwd: root,
-      encoding: 'utf8',
-    });
+    let result;
+    try {
+      result = execFileSync(npmPackInvocation.command, npmPackInvocation.args, {
+        cwd: root,
+        encoding: 'utf8',
+      });
+    } finally {
+      restorePostpackMetadata(root);
+    }
     const packEntries = JSON.parse(result);
     const packagedPaths = new Set(
       packEntries.flatMap((entry) => entry.files ?? []).map((file) => normalizePackPath(file.path)),
@@ -53,14 +55,35 @@ describe('package contents', () => {
     }
   }, 15_000);
 
-  it('package metadata declares every generated backend package as optional', () => {
+  it('source package metadata does not declare generated backend packages during workspace install', () => {
     const packageJson = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
 
-    assert.deepEqual(Object.keys(packageJson.optionalDependencies).sort(), expectedBackendPackages);
-
     for (const packageName of expectedBackendPackages) {
-      assert.equal(packageJson.optionalDependencies[packageName], packageJson.version);
+      assert.equal(packageJson.optionalDependencies?.[packageName], undefined);
     }
+  });
+
+  it('prepack metadata declares every generated backend package as optional', () => {
+    try {
+      applyPrepackMetadata(root);
+      const packageJson = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
+
+      assert.deepEqual(
+        Object.keys(packageJson.optionalDependencies).sort(),
+        expectedBackendPackages,
+      );
+
+      for (const packageName of expectedBackendPackages) {
+        assert.equal(packageJson.optionalDependencies[packageName], packageJson.version);
+      }
+      assert.equal(packageJson.scripts.prepack, undefined);
+      assert.equal(packageJson.scripts.postpack, undefined);
+    } finally {
+      restorePostpackMetadata(root);
+    }
+
+    const restoredPackageJson = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
+    assert.equal(restoredPackageJson.optionalDependencies, undefined);
   });
 });
 
