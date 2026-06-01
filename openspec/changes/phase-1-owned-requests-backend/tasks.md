@@ -1,12 +1,12 @@
 ## 1. Baseline and Workspace Setup
 
 - [x] 1.1 Convert the repository into an Nx-managed pnpm monorepo with explicit source workspace globs
-- [ ] 1.2 Define Nx projects for `packages/impersonated-fetch` (pure JS package), `packages/native-backend` (Go backend), and native package generation workflow
+- [x] 1.2 Define Nx projects for `packages/impersonated-fetch` (pure JS package), `packages/native-backend` (Go backend), and native package generation workflow
 - [x] 1.3 Move the main `impersonated-fetch` package source to `packages/impersonated-fetch`
-- [ ] 1.4 Define the Phase 1 Go backend directory at `packages/native-backend` with module layout for a single unified backend source package
-- [ ] 1.5 Add Go toolchain documentation and local build prerequisites for contributors
-- [ ] 1.6 Add backend build scripts for the current host platform without changing default package loading behavior
-- [ ] 1.7 Document the Phase 1 license gate for `wangluozhe/requests` before public artifact publishing
+- [x] 1.4 Define the Phase 1 Go backend directory at `packages/native-backend` with module layout for a single unified backend source package
+- [x] 1.5 Add Go toolchain documentation and local build prerequisites for contributors
+- [x] 1.6 Add backend build scripts for the current host platform without changing default package loading behavior
+- [x] 1.7 Document the Phase 1 license gate for `wangluozhe/requests` before public artifact publishing
 
 ## 2. Phase 1 Native ABI Implementation
 
