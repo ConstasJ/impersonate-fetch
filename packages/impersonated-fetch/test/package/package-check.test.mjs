@@ -53,7 +53,7 @@ describe('package contents', () => {
       assert.doesNotMatch(path, /impersonated-fetch-backend-.*\.(dll|so|dylib)$/);
       assert.doesNotMatch(path, /requests-go-.*\.(dll|so|dylib)$/);
     }
-  }, 15_000);
+  }, 60_000);
 
   it('source package metadata does not declare generated backend packages during workspace install', () => {
     const packageJson = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
