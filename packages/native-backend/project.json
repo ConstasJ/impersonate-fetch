@@ -27,10 +27,25 @@
         "cwd": "packages/native-backend"
       }
     },
+    "test-artifact": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run test:artifact",
+        "cwd": "packages/native-backend"
+      }
+    },
     "native-package-plan": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm run package:plan",
+        "cwd": "packages/native-backend"
+      },
+      "outputs": ["{projectRoot}/dist/native-packages"]
+    },
+    "native-package-generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run package:generate",
         "cwd": "packages/native-backend"
       },
       "outputs": ["{projectRoot}/dist/native-packages"]

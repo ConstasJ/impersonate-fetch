@@ -15,7 +15,9 @@
     "native-assets:check": "nx run impersonated-fetch:native-assets-check",
     "native-backend:build": "nx run native-backend:build",
     "native-backend:lint": "nx run native-backend:lint",
+    "native-backend:package-generate": "nx run native-backend:native-package-generate",
     "native-backend:package-plan": "nx run native-backend:native-package-plan",
+    "native-backend:test-artifact": "nx run native-backend:test-artifact",
     "native-backend:test": "nx run native-backend:test"
   },
   "devDependencies": {
