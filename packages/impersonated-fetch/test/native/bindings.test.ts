@@ -13,8 +13,8 @@ import {
 const asset: NativeAssetInfo = {
   platform: 'test',
   arch: 'x64',
-  filename: 'requests-go-test.so',
-  path: '/native/requests-go-test.so',
+  filename: 'impersonated-fetch-backend-test.so',
+  path: '/native/impersonated-fetch-backend-test.so',
   dependenciesDir: '/native',
 };
 
