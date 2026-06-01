@@ -1,1 +1,4 @@
+* text=auto eol=lf
+
 native/* filter=lfs diff=lfs merge=lfs -text
+packages/impersonated-fetch/native/* filter=lfs diff=lfs merge=lfs -text
