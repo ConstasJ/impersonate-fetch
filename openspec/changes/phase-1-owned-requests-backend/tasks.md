@@ -48,13 +48,13 @@
 
 ## 6. CI and Release Gates
 
-- [ ] 6.1 Add Nx affected CI targets for JavaScript build, typecheck, lint, and Vitest tests
-- [ ] 6.2 Add Nx-wrapped CI targets for Go build and Go tests on the host platform
-- [ ] 6.3 Configure GitHub Actions Matrix for parallel native builds across all supported platforms
-- [ ] 6.4 Add CI artifact upload for source-built backend binaries from matrix jobs
-- [ ] 6.5 Add release workflow tasks for generated scoped backend package artifacts using matrix build outputs
-- [ ] 6.6 Add a release gate that blocks public Phase 1 publishing until license/shipping approval is recorded
-- [ ] 6.7 Add optional/manual fingerprint smoke test workflow for network-dependent verification
+- [x] 6.1 Add Nx affected CI targets for JavaScript build, typecheck, lint, and Vitest tests
+- [x] 6.2 Add Nx-wrapped CI targets for Go build and Go tests on the host platform
+- [x] 6.3 Configure GitHub Actions Matrix for parallel native builds across all supported platforms
+- [x] 6.4 Add CI artifact upload for source-built backend binaries from matrix jobs
+- [x] 6.5 Add release workflow tasks for generated scoped backend package artifacts using matrix build outputs
+- [x] 6.6 Add a release gate that blocks public Phase 1 publishing until license/shipping approval is recorded
+- [x] 6.7 Add optional/manual fingerprint smoke test workflow for network-dependent verification
 
 ## 7. Documentation and Handoff
 
