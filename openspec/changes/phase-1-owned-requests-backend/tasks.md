@@ -27,13 +27,13 @@
 
 ## 4. Contract and Differential Tests
 
-- [ ] 4.1 Add ABI symbol smoke tests for the source-built backend artifact
-- [ ] 4.2 Add buffered request contract fixtures for successful responses and native errors
-- [ ] 4.3 Add streaming contract fixtures for open, read, EOF, and close behavior
-- [ ] 4.4 Add memory cleanup tests covering `freeMemory`, repeated `stream_read`, and `stream_close`
-- [ ] 4.5 Add differential oracle tests comparing the source-built backend with the current closed backend
-- [ ] 4.6 Add tests or review checks for pseudocode-derived lifecycle details: response id pointer map, stream pool, `${stream_id}_read` cleanup, and error prefix compatibility
-- [ ] 4.7 Record any differential mismatches as either implementation bugs or explicit compatibility decisions
+- [x] 4.1 Add ABI symbol smoke tests for the source-built backend artifact
+- [x] 4.2 Add buffered request contract fixtures for successful responses and native errors
+- [x] 4.3 Add streaming contract fixtures for open, read, EOF, and close behavior
+- [x] 4.4 Add memory cleanup tests covering `freeMemory`, repeated `stream_read`, and `stream_close`
+- [x] 4.5 Add differential oracle tests comparing the source-built backend with the current closed backend
+- [x] 4.6 Add tests or review checks for pseudocode-derived lifecycle details: response id pointer map, stream pool, `${stream_id}_read` cleanup, and error prefix compatibility
+- [x] 4.7 Record any differential mismatches as either implementation bugs or explicit compatibility decisions
 
 ## 5. Native Build Matrix and Packaging
 
