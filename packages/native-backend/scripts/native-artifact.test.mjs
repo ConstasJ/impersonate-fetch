@@ -14,7 +14,7 @@ const requireFromJsPackage = createRequire(
 );
 const koffi = requireFromJsPackage('koffi');
 const sourceAsset = resolve(root, 'dist', assetNameForTarget(hostTarget()));
-const closedAsset = resolve(root, '..', 'impersonated-fetch', 'native', closedAssetNameForHost());
+const closedAsset = process.env.IMPERSONATED_FETCH_CLOSED_BACKEND_ORACLE;
 
 test('source-built backend artifact exports the supported C ABI symbols', () => {
   assert.equal(existsSync(sourceAsset), true, `source-built asset is missing: ${sourceAsset}`);
@@ -95,8 +95,13 @@ test('source-built backend artifact satisfies streaming read, EOF, and close con
 });
 
 test('source-built and closed backend artifacts agree on baseline buffered behavior', async (context) => {
+  if (!closedAsset) {
+    context.skip('set IMPERSONATED_FETCH_CLOSED_BACKEND_ORACLE to run closed backend comparison');
+    return;
+  }
+
   if (!existsSync(closedAsset)) {
-    context.skip(`closed backend oracle is missing: ${closedAsset}`);
+    assert.fail(`closed backend oracle is missing: ${closedAsset}`);
     return;
   }
 
@@ -204,18 +209,4 @@ function hostTarget() {
   const arch = process.arch === 'ia32' ? 'x32' : process.arch;
 
   return `${process.platform}-${arch}`;
-}
-
-function closedAssetNameForHost() {
-  const target = hostTarget();
-  const names = new Map([
-    ['linux-x64', 'requests-go-amd64.so'],
-    ['linux-x32', 'requests-go-x86.so'],
-    ['linux-arm64', 'requests-go-arm64.so'],
-    ['darwin-x64', 'requests-go-x86.dylib'],
-    ['darwin-arm64', 'requests-go-arm64.dylib'],
-    ['win32-x64', 'requests-go-win64.dll'],
-  ]);
-
-  return names.get(target) ?? 'unsupported-closed-backend-oracle';
 }
