@@ -6,3 +6,4 @@ dist/
 !native/*
 refs/
 .worktrees/
+.nx/
