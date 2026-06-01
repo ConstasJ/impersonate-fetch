@@ -1,0 +1,12 @@
+{
+  "name": "@impersonated-fetch/native-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-host.mjs",
+    "format": "gofmt -w cmd internal",
+    "lint": "node scripts/check-format.mjs",
+    "package:plan": "node scripts/native-package-plan.mjs",
+    "test": "go test ./..."
+  }
+}

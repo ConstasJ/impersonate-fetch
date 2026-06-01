@@ -12,7 +12,11 @@
     "test:native-assets": "nx run impersonated-fetch:test-native-assets",
     "test:package": "nx run impersonated-fetch:test-package",
     "package:check": "nx run impersonated-fetch:package-check",
-    "native-assets:check": "nx run impersonated-fetch:native-assets-check"
+    "native-assets:check": "nx run impersonated-fetch:native-assets-check",
+    "native-backend:build": "nx run native-backend:build",
+    "native-backend:lint": "nx run native-backend:lint",
+    "native-backend:package-plan": "nx run native-backend:native-package-plan",
+    "native-backend:test": "nx run native-backend:test"
   },
   "devDependencies": {
     "nx": "^22.7.5"

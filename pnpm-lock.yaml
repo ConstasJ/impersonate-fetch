@@ -40,6 +40,8 @@ importers:
         specifier: ^4.1.7
         version: 4.1.7(@types/node@25.9.1)(vite@8.0.14(@types/node@25.9.1)(yaml@2.9.0))
 
+  packages/native-backend: {}
+
 packages:
 
   '@babel/generator@8.0.0-rc.5':
