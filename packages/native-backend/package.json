@@ -7,6 +7,7 @@
     "format": "gofmt -w cmd internal",
     "lint": "node scripts/check-format.mjs",
     "package:plan": "node scripts/native-package-plan.mjs",
-    "test": "go test ./... && node --test scripts/*.test.mjs"
+    "test": "go test ./... && node --test scripts/*.test.mjs",
+    "test:artifact": "node --test scripts/native-artifact.test.mjs"
   }
 }
