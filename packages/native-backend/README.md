@@ -29,7 +29,8 @@ and fails early with a prerequisite message when CGO or the compiler is unavaila
 pnpm --filter @impersonated-fetch/native-backend run build
 ```
 
-The host build writes the artifact to `packages/native-backend/dist/<asset-name>`. It does not
+The host build writes `packages/native-backend/dist/impersonated-fetch-backend-<target>.<ext>`.
+It does not
 change the default runtime loader in `packages/impersonated-fetch`.
 
 ## License gate
