@@ -42,6 +42,7 @@ export interface GetCapabilitiesOptions {
   backend?: TransportBackendName;
   platform?: NativePlatform;
   arch?: NativeArchitecture;
+  root?: string;
   sourceBuilt?: boolean;
   backendPackages?: boolean;
 }
@@ -62,6 +63,7 @@ export function getCapabilities(options: GetCapabilitiesOptions = {}): Transport
 
   try {
     const asset = getNativeAssetInfo(platformName, arch, {
+      root: options.root,
       sourceBuilt: options.sourceBuilt,
       backendPackages: options.backendPackages,
     });

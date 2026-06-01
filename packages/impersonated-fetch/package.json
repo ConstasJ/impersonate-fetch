@@ -14,10 +14,7 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE",
-    "native/*.dll",
-    "native/*.dylib",
-    "native/*.so"
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsdown",
@@ -39,6 +36,16 @@
     "koffi": "^2.16.2",
     "tough-cookie": "^6.0.1",
     "zod": "^4.4.3"
+  },
+  "optionalDependencies": {
+    "@impersonated-fetch/backend-darwin-arm64": "0.0-development",
+    "@impersonated-fetch/backend-darwin-x64": "0.0-development",
+    "@impersonated-fetch/backend-linux-arm64": "0.0-development",
+    "@impersonated-fetch/backend-linux-x32": "0.0-development",
+    "@impersonated-fetch/backend-linux-x64": "0.0-development",
+    "@impersonated-fetch/backend-win32-arm64": "0.0-development",
+    "@impersonated-fetch/backend-win32-x32": "0.0-development",
+    "@impersonated-fetch/backend-win32-x64": "0.0-development"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",

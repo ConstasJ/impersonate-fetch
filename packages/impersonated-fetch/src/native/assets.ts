@@ -32,16 +32,7 @@ interface BackendPackageMapping extends NativeAssetMapping {
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = findRepositoryRoot(moduleDir);
-const dependenciesDir = getDependenciesDir(repositoryRoot);
-
-const nativeAssetMappings: readonly NativeAssetMapping[] = [
-  { platform: 'linux', arch: 'x64', filename: 'requests-go-amd64.so' },
-  { platform: 'linux', arch: 'arm64', filename: 'requests-go-arm64.so' },
-  { platform: 'linux', arch: 'ia32', filename: 'requests-go-x86.so' },
-  { platform: 'win32', arch: 'x64', filename: 'requests-go-win64.dll' },
-  { platform: 'darwin', arch: 'x64', filename: 'requests-go-x86.dylib' },
-  { platform: 'darwin', arch: 'arm64', filename: 'requests-go-arm64.dylib' },
-];
+const dependenciesDir = getSourceBuiltBackendDir(repositoryRoot);
 
 const sourceBuiltNativeAssetMappings: readonly NativeAssetMapping[] = [
   { platform: 'linux', arch: 'x64', filename: 'impersonated-fetch-backend-linux-x64.so' },
@@ -143,19 +134,7 @@ export function getNativeAssetInfo(
     return packageAsset;
   }
 
-  const fallbackDependenciesDir = getDependenciesDir(root);
-  const fallbackAsset = resolveNativeAsset(
-    fallbackDependenciesDir,
-    nativeAssetMappings,
-    platform,
-    arch,
-  );
-
-  if (fallbackAsset) {
-    return fallbackAsset;
-  }
-
-  const mapping = nativeAssetMappings.find(
+  const mapping = backendPackageMappings.find(
     (asset) => asset.platform === platform && asset.arch === arch,
   );
 
@@ -163,27 +142,11 @@ export function getNativeAssetInfo(
     throw new NativeAssetNotFoundError(platform, arch, 'unsupported platform or architecture');
   }
 
-  const assetPath = resolve(fallbackDependenciesDir, mapping.filename);
-
-  if (!isPathInside(assetPath, fallbackDependenciesDir)) {
-    throw new NativeAssetNotFoundError(
-      platform,
-      arch,
-      'resolved path escapes dependencies directory',
-    );
-  }
-
-  if (!existsSync(assetPath)) {
-    throw new NativeAssetNotFoundError(platform, arch, `${mapping.filename} is missing`);
-  }
-
-  return {
+  throw new NativeAssetNotFoundError(
     platform,
     arch,
-    filename: mapping.filename,
-    path: assetPath,
-    dependenciesDir: fallbackDependenciesDir,
-  };
+    `${mapping.packageName} is not installed or ${mapping.filename} is missing`,
+  );
 }
 
 function resolveBackendPackageAsset(
@@ -277,16 +240,11 @@ function findRepositoryRoot(fromDir: string): string {
   );
 }
 
-function getDependenciesDir(root: string): string {
-  return resolve(root, 'native');
-}
-
 function getSourceBuiltBackendDir(root: string): string {
   return resolve(root, '..', 'native-backend', 'dist');
 }
 
 export const nativeAssetDependenciesDir = dependenciesDir;
-export const nativeAssetFilenames = nativeAssetMappings.map((asset) => asset.filename);
 export const sourceBuiltNativeAssetFilenames = sourceBuiltNativeAssetMappings.map(
   (asset) => asset.filename,
 );

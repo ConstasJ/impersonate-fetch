@@ -196,7 +196,6 @@ function findBundledShim(asset: NativeAssetInfo): string | undefined {
     ? asset.filename.slice(0, -nativeExtension.length)
     : asset.filename;
   const candidates = [
-    join(asset.dependenciesDir, `requests-go-shim${extension}`),
     join(asset.dependenciesDir, `${nativeStem}-shim${extension}`),
     join(asset.dependenciesDir, `native-bindings-shim${extension}`),
   ];
