@@ -19,19 +19,28 @@ func TestFreeStoredResponseDeletesResponsePointer(t *testing.T) {
 }
 
 func TestStoreResponseReplacesPreviousPointer(t *testing.T) {
-	storeResponse("stream-id_read", `{"data":"first"}`)
-	first, ok := responsePointers.Load("stream-id_read")
+	first := storeResponse("stream-id_read", `{"data":"first"}`)
+	if first == nil {
+		t.Fatal("expected first pointer to be non-nil")
+	}
+	storedFirst, ok := responsePointers.Load("stream-id_read")
 	if !ok {
 		t.Fatal("expected first pointer to be stored")
 	}
+	if storedFirst != first {
+		t.Fatal("expected first stored pointer to match returned pointer")
+	}
 
-	storeResponse("stream-id_read", `{"data":"second"}`)
-	second, ok := responsePointers.Load("stream-id_read")
+	second := storeResponse("stream-id_read", `{"data":"second"}`)
+	if second == nil {
+		t.Fatal("expected replacement pointer to be non-nil")
+	}
+	storedSecond, ok := responsePointers.Load("stream-id_read")
 	if !ok {
 		t.Fatal("expected replacement pointer to be stored")
 	}
-	if first == second {
-		t.Fatal("expected replacement pointer to differ from first pointer")
+	if storedSecond != second {
+		t.Fatal("expected replacement stored pointer to match returned pointer")
 	}
 
 	freeStoredResponse("stream-id_read")
