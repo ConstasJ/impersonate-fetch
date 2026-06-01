@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { basename, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'vitest';
@@ -24,7 +25,7 @@ const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 describe('native-assets resolver', () => {
   for (const [platform, arch, filename] of supportedAssets) {
     it(`native-assets maps ${platform}/${arch} to ${filename}`, () => {
-      const info = getNativeAssetInfo(platform, arch);
+      const info = getNativeAssetInfo(platform, arch, { sourceBuilt: false });
       const pathWithinDependencies = relative(nativeAssetDependenciesDir, info.path);
       const dependenciesWithinPackage = relative(root, nativeAssetDependenciesDir);
 
@@ -49,5 +50,50 @@ describe('native-assets resolver', () => {
         return true;
       },
     );
+  });
+
+  it('native-assets prefers source-built backend asset when it exists', () => {
+    const tempRoot = mkdtempSync(resolve(tmpdir(), 'impersonated-fetch-assets-'));
+
+    try {
+      const packageRoot = resolve(tempRoot, 'impersonated-fetch');
+      const fallbackDir = resolve(packageRoot, 'native');
+      const sourceBuiltDir = resolve(tempRoot, 'native-backend', 'dist');
+      const sourceBuiltFilename = 'impersonated-fetch-backend-win32-x64.dll';
+
+      mkdirSync(fallbackDir, { recursive: true });
+      mkdirSync(sourceBuiltDir, { recursive: true });
+      writeFileSync(resolve(fallbackDir, 'requests-go-win64.dll'), 'closed-backend');
+      writeFileSync(resolve(sourceBuiltDir, sourceBuiltFilename), 'source-built-backend');
+
+      const info = getNativeAssetInfo('win32', 'x64', { root: packageRoot });
+
+      assert.equal(info.filename, sourceBuiltFilename);
+      assert.equal(info.dependenciesDir, sourceBuiltDir);
+      assert.equal(basename(info.path), sourceBuiltFilename);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it('native-assets falls back to current bundled native asset when source-built asset is absent', () => {
+    const tempRoot = mkdtempSync(resolve(tmpdir(), 'impersonated-fetch-assets-'));
+
+    try {
+      const packageRoot = resolve(tempRoot, 'impersonated-fetch');
+      const fallbackDir = resolve(packageRoot, 'native');
+      const fallbackFilename = 'requests-go-win64.dll';
+
+      mkdirSync(fallbackDir, { recursive: true });
+      writeFileSync(resolve(fallbackDir, fallbackFilename), 'closed-backend');
+
+      const info = getNativeAssetInfo('win32', 'x64', { root: packageRoot });
+
+      assert.equal(info.filename, fallbackFilename);
+      assert.equal(info.dependenciesDir, fallbackDir);
+      assert.equal(basename(info.path), fallbackFilename);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
   });
 });

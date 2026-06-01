@@ -169,7 +169,11 @@ describe('package entrypoints', () => {
 
 function validateResolver(module, label) {
   for (const [filename, expected] of expectedNativeAssets) {
-    const info = module.getCapabilities({ platform: expected.platform, arch: expected.arch });
+    const info = module.getCapabilities({
+      platform: expected.platform,
+      arch: expected.arch,
+      sourceBuilt: false,
+    });
 
     assert.equal(info.nativeAssetFilename, filename, `${label} resolver filename mismatch`);
     assert.equal(basename(info.nativeAssetPath), filename, `${label} resolver path mismatch`);

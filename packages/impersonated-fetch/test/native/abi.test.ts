@@ -17,7 +17,7 @@ describe('native-abi contract', () => {
   it('native-abi loads the current platform asset with Koffi and exposes symbols', () => {
     const result = probeNativeAbi();
 
-    assert.match(result.assetPath, /requests-go.*\.(dll|so|dylib)$/);
+    assert.match(result.assetPath, /(requests-go|impersonated-fetch-backend).*\.(dll|so|dylib)$/);
     assert.deepEqual(result.checkedSymbols, nativeAbiSymbolNames);
     assert.equal(result.mode, 'direct');
   });

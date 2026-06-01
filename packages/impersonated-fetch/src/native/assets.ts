@@ -13,6 +13,11 @@ export interface NativeAssetInfo {
   dependenciesDir: string;
 }
 
+export interface NativeAssetResolverOptions {
+  readonly root?: string;
+  readonly sourceBuilt?: boolean;
+}
+
 interface NativeAssetMapping {
   platform: NativePlatform;
   arch: NativeArchitecture;
@@ -32,6 +37,17 @@ const nativeAssetMappings: readonly NativeAssetMapping[] = [
   { platform: 'darwin', arch: 'arm64', filename: 'requests-go-arm64.dylib' },
 ];
 
+const sourceBuiltNativeAssetMappings: readonly NativeAssetMapping[] = [
+  { platform: 'linux', arch: 'x64', filename: 'impersonated-fetch-backend-linux-x64.so' },
+  { platform: 'linux', arch: 'ia32', filename: 'impersonated-fetch-backend-linux-x32.so' },
+  { platform: 'linux', arch: 'arm64', filename: 'impersonated-fetch-backend-linux-arm64.so' },
+  { platform: 'darwin', arch: 'x64', filename: 'impersonated-fetch-backend-darwin-x64.dylib' },
+  { platform: 'darwin', arch: 'arm64', filename: 'impersonated-fetch-backend-darwin-arm64.dylib' },
+  { platform: 'win32', arch: 'x64', filename: 'impersonated-fetch-backend-win32-x64.dll' },
+  { platform: 'win32', arch: 'ia32', filename: 'impersonated-fetch-backend-win32-x32.dll' },
+  { platform: 'win32', arch: 'arm64', filename: 'impersonated-fetch-backend-win32-arm64.dll' },
+];
+
 export class NativeAssetNotFoundError extends Error {
   constructor(platform: NativePlatform, arch: NativeArchitecture, detail?: string) {
     const suffix = detail ? `: ${detail}` : '';
@@ -44,7 +60,35 @@ export class NativeAssetNotFoundError extends Error {
 export function getNativeAssetInfo(
   platform: NativePlatform = process.platform,
   arch: NativeArchitecture = process.arch,
+  options: NativeAssetResolverOptions = {},
 ): NativeAssetInfo {
+  const root = options.root ?? repositoryRoot;
+  const sourceBuiltAsset =
+    options.sourceBuilt === false
+      ? undefined
+      : resolveNativeAsset(
+          getSourceBuiltBackendDir(root),
+          sourceBuiltNativeAssetMappings,
+          platform,
+          arch,
+        );
+
+  if (sourceBuiltAsset) {
+    return sourceBuiltAsset;
+  }
+
+  const fallbackDependenciesDir = getDependenciesDir(root);
+  const fallbackAsset = resolveNativeAsset(
+    fallbackDependenciesDir,
+    nativeAssetMappings,
+    platform,
+    arch,
+  );
+
+  if (fallbackAsset) {
+    return fallbackAsset;
+  }
+
   const mapping = nativeAssetMappings.find(
     (asset) => asset.platform === platform && asset.arch === arch,
   );
@@ -53,9 +97,9 @@ export function getNativeAssetInfo(
     throw new NativeAssetNotFoundError(platform, arch, 'unsupported platform or architecture');
   }
 
-  const assetPath = resolve(dependenciesDir, mapping.filename);
+  const assetPath = resolve(fallbackDependenciesDir, mapping.filename);
 
-  if (!isPathInside(assetPath, dependenciesDir)) {
+  if (!isPathInside(assetPath, fallbackDependenciesDir)) {
     throw new NativeAssetNotFoundError(
       platform,
       arch,
@@ -72,7 +116,38 @@ export function getNativeAssetInfo(
     arch,
     filename: mapping.filename,
     path: assetPath,
-    dependenciesDir,
+    dependenciesDir: fallbackDependenciesDir,
+  };
+}
+
+function resolveNativeAsset(
+  assetDir: string,
+  mappings: readonly NativeAssetMapping[],
+  platform: NativePlatform,
+  arch: NativeArchitecture,
+): NativeAssetInfo | undefined {
+  const mapping = mappings.find((asset) => asset.platform === platform && asset.arch === arch);
+
+  if (!mapping) {
+    return undefined;
+  }
+
+  const assetPath = resolve(assetDir, mapping.filename);
+
+  if (!isPathInside(assetPath, assetDir)) {
+    return undefined;
+  }
+
+  if (!existsSync(assetPath)) {
+    return undefined;
+  }
+
+  return {
+    platform,
+    arch,
+    filename: mapping.filename,
+    path: assetPath,
+    dependenciesDir: assetDir,
   };
 }
 
@@ -99,5 +174,12 @@ function getDependenciesDir(root: string): string {
   return resolve(root, 'native');
 }
 
+function getSourceBuiltBackendDir(root: string): string {
+  return resolve(root, '..', 'native-backend', 'dist');
+}
+
 export const nativeAssetDependenciesDir = dependenciesDir;
 export const nativeAssetFilenames = nativeAssetMappings.map((asset) => asset.filename);
+export const sourceBuiltNativeAssetFilenames = sourceBuiltNativeAssetMappings.map(
+  (asset) => asset.filename,
+);

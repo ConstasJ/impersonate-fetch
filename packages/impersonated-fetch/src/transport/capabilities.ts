@@ -42,6 +42,7 @@ export interface GetCapabilitiesOptions {
   backend?: TransportBackendName;
   platform?: NativePlatform;
   arch?: NativeArchitecture;
+  sourceBuilt?: boolean;
 }
 
 export interface AssertCapabilityOptions extends GetCapabilitiesOptions {
@@ -59,7 +60,7 @@ export function getCapabilities(options: GetCapabilitiesOptions = {}): Transport
   }
 
   try {
-    const asset = getNativeAssetInfo(platformName, arch);
+    const asset = getNativeAssetInfo(platformName, arch, { sourceBuilt: options.sourceBuilt });
     const hasRequest = symbols.includes('request');
     const hasStreaming =
       symbols.includes('stream_request') &&
