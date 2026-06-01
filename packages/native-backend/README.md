@@ -38,8 +38,8 @@ pnpm --filter @impersonated-fetch/native-backend run build
 ```
 
 The host build writes `packages/native-backend/dist/impersonated-fetch-backend-<target>.<ext>`.
-It does not
-change the default runtime loader in `packages/impersonated-fetch`.
+In a monorepo checkout, `packages/impersonated-fetch` prefers this source-built artifact before
+generated scoped backend packages.
 
 ## License gate
 
@@ -58,13 +58,32 @@ Generated package directories are written below `packages/native-backend/dist/na
 They are release artifacts, not source workspace packages, and must stay outside
 `pnpm-workspace.yaml`.
 
+For production installs, the main `impersonated-fetch` package declares every supported generated
+backend package as an optional dependency. Package managers normally install the matching package
+for the current `os`/`cpu`. If optional dependencies are disabled or pruned, install the matching
+package explicitly, for example:
+
+```powershell
+pnpm add impersonated-fetch @impersonated-fetch/backend-win32-x64
+```
+
+Validate generated package output with:
+
+```powershell
+pnpm --filter @impersonated-fetch/native-backend run package:generate
+pnpm --filter @impersonated-fetch/native-backend run package:validate
+```
+
 ## Rollback and parity posture
 
-The main package keeps the existing bundled closed backend as a fallback while Phase 1 parity is
-being validated. If a generated backend package is missing, users can still rely on the bundled
-closed backend unless an installed generated package is broken. A broken generated package fails
-with a clear native asset error instead of silently degrading.
+The main package no longer ships the bundled closed backend as a fallback. If a generated backend
+package is missing, users receive a clear native asset error naming the expected
+`@impersonated-fetch/backend-*` package and artifact. Roll back a bad backend by pinning the last
+known-good generated package, regenerating and republishing the affected package, or using an
+explicit native asset override in controlled deployments.
 
 The closed backend remains the differential oracle for Phase 1. Mismatches discovered by
 `scripts/native-artifact.test.mjs` must be recorded as implementation bugs or explicit
-compatibility decisions before publishing generated backend artifacts.
+compatibility decisions before publishing generated backend artifacts. Provide the closed oracle for
+local compatibility checks with `IMPERSONATED_FETCH_CLOSED_BACKEND_ORACLE`; do not place it under
+`packages/impersonated-fetch/native` or ship it in the main package.

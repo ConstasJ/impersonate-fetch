@@ -172,20 +172,19 @@ try {
 
 ## Native Asset Support
 
-The package uses native bindings to achieve TLS fingerprint impersonation. During Phase 1, runtime
-resolution prefers source-built and generated backends while preserving rollback to the current
-bundled closed backend.
+The package uses native bindings to achieve TLS fingerprint impersonation. Production installs use
+generated optional backend packages such as `@impersonated-fetch/backend-win32-x64`; the main
+`impersonated-fetch` package does not ship `native/*.dll`, `native/*.so`, or `native/*.dylib`
+fallback binaries.
 
 Runtime resolution order:
 
-1. A sibling source-built backend at `packages/native-backend/dist`, when present in a monorepo
+1. Explicit native asset paths and shim command overrides passed through advanced native binding
+   options.
+2. A sibling source-built backend at `packages/native-backend/dist`, when present in a monorepo
    checkout.
-2. A generated scoped backend package such as `@impersonated-fetch/backend-win32-x64`, when
+3. A generated scoped backend package such as `@impersonated-fetch/backend-win32-x64`, when
    installed.
-3. The bundled closed backend in this package's `native/` directory.
-
-Explicit native asset paths and shim command overrides still take precedence through the native
-binding options used by advanced callers and tests.
 
 Generated backend packages use the naming scheme
 `@impersonated-fetch/backend-<platform>-<arch>` and contain one artifact named
@@ -208,13 +207,22 @@ The following platforms are **not supported**:
 
 If you attempt to use the package on an unsupported platform, you will receive a `NativeAssetNotFoundError` with instructions on supported platforms.
 
+If a supported platform is missing its optional backend dependency, reinstall with optional
+dependencies enabled or install the matching generated package explicitly, for example:
+
+```bash
+npm install impersonated-fetch @impersonated-fetch/backend-linux-x64
+```
+
+If a generated package is installed but its native artifact is missing, loading fails with a clear
+native asset error so a broken package cannot silently degrade to a different backend.
+
 ### Phase 1 backend rollback
 
 The source-owned Go backend is currently a transitional `wangluozhe/requests`-based compatibility
-backend. If Phase 1 parity validation finds a regression, remove or disable the generated scoped
-backend package and the loader will fall back to the bundled closed backend. If a generated package
-is installed but its native artifact is missing, loading fails with a clear native asset error so a
-broken package cannot silently degrade to a different backend.
+backend. If Phase 1 parity validation finds a regression, rollback by pinning or regenerating the
+affected `@impersonated-fetch/backend-*` package, or by using an explicit native asset override for
+controlled testing. There is no bundled closed-backend fallback in the main package.
 
 Phase 2 is expected to move the owned backend toward direct `chttp` usage once the Phase 1 package,
 CI, and differential oracle gates are stable.
