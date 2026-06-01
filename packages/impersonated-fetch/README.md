@@ -172,24 +172,52 @@ try {
 
 ## Native Asset Support
 
-The package uses native bindings to achieve TLS fingerprint impersonation. Native assets are provided for the following platforms:
+The package uses native bindings to achieve TLS fingerprint impersonation. During Phase 1, runtime
+resolution prefers source-built and generated backends while preserving rollback to the current
+bundled closed backend.
+
+Runtime resolution order:
+
+1. A sibling source-built backend at `packages/native-backend/dist`, when present in a monorepo
+   checkout.
+2. A generated scoped backend package such as `@impersonated-fetch/backend-win32-x64`, when
+   installed.
+3. The bundled closed backend in this package's `native/` directory.
+
+Explicit native asset paths and shim command overrides still take precedence through the native
+binding options used by advanced callers and tests.
+
+Generated backend packages use the naming scheme
+`@impersonated-fetch/backend-<platform>-<arch>` and contain one artifact named
+`impersonated-fetch-backend-<platform>-<arch>.<ext>`.
 
 ### Supported Platforms
 
-- **Linux**: x64, ARM64
+- **Linux**: x64, x32, ARM64
 - **macOS**: x64, ARM64 (Apple Silicon)
-- **Windows**: x64
+- **Windows**: x64, x32, ARM64
 
 ### Platform Limitations
 
 The following platforms are **not supported**:
 
-- 32-bit architectures (x86, ARM32)
+- ARM32 architectures
 - FreeBSD, OpenBSD, or other Unix variants
 - Web browsers (this is a Node.js package only)
 - Deno or Bun runtimes (Node.js only)
 
 If you attempt to use the package on an unsupported platform, you will receive a `NativeAssetNotFoundError` with instructions on supported platforms.
+
+### Phase 1 backend rollback
+
+The source-owned Go backend is currently a transitional `wangluozhe/requests`-based compatibility
+backend. If Phase 1 parity validation finds a regression, remove or disable the generated scoped
+backend package and the loader will fall back to the bundled closed backend. If a generated package
+is installed but its native artifact is missing, loading fails with a clear native asset error so a
+broken package cannot silently degrade to a different backend.
+
+Phase 2 is expected to move the owned backend toward direct `chttp` usage once the Phase 1 package,
+CI, and differential oracle gates are stable.
 
 ## Security and Ethics Warning
 
