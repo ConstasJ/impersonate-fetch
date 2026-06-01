@@ -1,0 +1,82 @@
+{
+  "name": "impersonated-fetch",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "root": "packages/impersonated-fetch",
+  "sourceRoot": "packages/impersonated-fetch/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run build",
+        "cwd": "packages/impersonated-fetch"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run typecheck",
+        "cwd": "packages/impersonated-fetch"
+      }
+    },
+    "typecheck-examples": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run typecheck:examples",
+        "cwd": "packages/impersonated-fetch"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run lint",
+        "cwd": "packages/impersonated-fetch"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run test",
+        "cwd": "packages/impersonated-fetch"
+      },
+      "outputs": ["{projectRoot}/coverage"]
+    },
+    "test-fingerprint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run test:fingerprint",
+        "cwd": "packages/impersonated-fetch"
+      }
+    },
+    "test-native-assets": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run test:native-assets",
+        "cwd": "packages/impersonated-fetch"
+      }
+    },
+    "test-package": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run test:package",
+        "cwd": "packages/impersonated-fetch"
+      }
+    },
+    "package-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run package:check",
+        "cwd": "packages/impersonated-fetch"
+      }
+    },
+    "native-assets-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run native-assets:check",
+        "cwd": "packages/impersonated-fetch"
+      }
+    }
+  },
+  "tags": ["scope:js-package", "type:package"]
+}

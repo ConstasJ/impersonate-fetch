@@ -3,6 +3,7 @@ packages:
 
 allowBuilds:
   koffi: true
+  nx: true
 
 minimumReleaseAgeExclude:
   - tsdown@0.22.1
