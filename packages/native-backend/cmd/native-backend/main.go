@@ -11,7 +11,6 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/ConstasJ/impersonated-fetch/packages/native-backend/internal/compat"
 	"github.com/ConstasJ/impersonated-fetch/packages/native-backend/internal/requestabi"
 )
 
@@ -28,18 +27,26 @@ func request(requestJSON *C.char) *C.char {
 
 //export stream_request
 func stream_request(requestJSON *C.char) *C.char {
-	return storeResponse("phase1-source-backend-stub-stream", compat.UnsupportedRequestResponse("stream_request"))
+	payload, id := requestabi.HandleStreamRequestJSON(C.GoString(requestJSON))
+	if id == "" {
+		return C.CString(payload)
+	}
+	return storeResponse(id, payload)
 }
 
 //export stream_read
 func stream_read(streamID *C.char, size C.int) *C.char {
-	id := C.GoString(streamID)
-	return storeResponse(id+"_read", compat.UnsupportedStreamReadResponse(id))
+	payload, id := requestabi.HandleStreamRead(C.GoString(streamID), int(size))
+	if id == "" {
+		return C.CString(payload)
+	}
+	return storeResponse(id, payload)
 }
 
 //export stream_close
 func stream_close(streamID *C.char) {
 	id := C.GoString(streamID)
+	requestabi.CloseStream(id)
 	freeStoredResponse(id)
 	freeStoredResponse(id + "_read")
 }

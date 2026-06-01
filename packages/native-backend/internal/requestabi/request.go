@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/url"
 	"strings"
 	"sync"
@@ -197,6 +198,114 @@ func buildRequest(requestParams libs.RequestParams) (*requesturl.Request, error)
 
 func errorResponse(message string) string {
 	payload, err := json.Marshal(nativeResponsePayload{Err: message})
+	if err != nil {
+		return fmt.Sprintf(`{"err":%q}`, message)
+	}
+	return string(payload)
+}
+
+var streamPool sync.Map
+
+type streamEntry struct {
+	body io.ReadCloser
+}
+
+type streamOpenPayload struct {
+	StreamID   string              `json:"stream_id,omitempty"`
+	URL        string              `json:"url,omitempty"`
+	Headers    map[string][]string `json:"headers,omitempty"`
+	Cookies    any                 `json:"cookies,omitempty"`
+	StatusCode int                 `json:"status_code,omitempty"`
+	Err        string              `json:"err,omitempty"`
+}
+
+type streamReadPayload struct {
+	Data string `json:"data"`
+	EOF  bool   `json:"eof"`
+	Err  string `json:"err,omitempty"`
+}
+
+func HandleStreamRequestJSON(requestParamsString string) (string, string) {
+	requestParams := libs.RequestParams{}
+	if err := json.Unmarshal([]byte(requestParamsString), &requestParams); err != nil {
+		return streamOpenError("stream_request->json.Unmarshal failed: " + err.Error()), ""
+	}
+	requestParams.Stream = true
+
+	req, err := buildRequest(requestParams)
+	if err != nil {
+		return streamOpenError("stream_request->buildRequest failed: " + err.Error()), ""
+	}
+
+	response, err := getSession(requestParams.Id).Request(requestParams.Method, requestParams.Url, req)
+	if err != nil {
+		return streamOpenError("stream_request->session.Request failed: " + err.Error()), ""
+	}
+
+	streamID := uuid.New().String()
+	streamPool.Store(streamID, streamEntry{body: response.Body})
+	payload := streamOpenPayload{
+		StreamID:   streamID,
+		URL:        response.Url,
+		Headers:    response.Headers,
+		Cookies:    response.Cookies,
+		StatusCode: response.StatusCode,
+	}
+	responseJSON, err := json.Marshal(payload)
+	if err != nil {
+		return streamOpenError("stream_request->json.Marshal failed: " + err.Error()), ""
+	}
+
+	return string(responseJSON), streamID
+}
+
+func HandleStreamRead(streamID string, size int) (string, string) {
+	value, ok := streamPool.Load(streamID)
+	if !ok {
+		return streamReadError("stream_read->stream not found: " + streamID), ""
+	}
+	if size <= 0 {
+		size = 4096
+	}
+
+	entry := value.(streamEntry)
+	buffer := make([]byte, size)
+	n, err := entry.body.Read(buffer)
+	payload := streamReadPayload{}
+	if n > 0 {
+		payload.Data = base64.StdEncoding.EncodeToString(buffer[:n])
+	}
+	if err == io.EOF {
+		payload.EOF = true
+	} else if err != nil {
+		return streamReadError("stream_read->Read failed: " + err.Error()), ""
+	}
+	responseJSON, err := json.Marshal(payload)
+	if err != nil {
+		return streamReadError("stream_read->json.Marshal failed: " + err.Error()), ""
+	}
+
+	return string(responseJSON), streamID + "_read"
+}
+
+func CloseStream(streamID string) {
+	value, ok := streamPool.LoadAndDelete(streamID)
+	if !ok {
+		return
+	}
+	_ = value.(streamEntry).body.Close()
+}
+
+func streamOpenError(message string) string {
+	payload, err := json.Marshal(streamOpenPayload{Err: message})
+	if err != nil {
+		return fmt.Sprintf(`{"err":%q}`, message)
+	}
+	return string(payload)
+}
+
+func streamReadError(message string) string {
+	payload, err := json.Marshal(streamReadPayload{Err: message, EOF: true})
 	if err != nil {
 		return fmt.Sprintf(`{"err":%q}`, message)
 	}
