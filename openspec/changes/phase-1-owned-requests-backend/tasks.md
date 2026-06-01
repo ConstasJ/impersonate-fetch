@@ -37,14 +37,14 @@
 
 ## 5. Native Build Matrix and Packaging
 
-- [ ] 5.1 Add cross-build scripts for supported Linux, macOS, and Windows targets
-- [ ] 5.2 Set up GitHub Actions Matrix workflow for parallel cross-platform builds (Linux x64/x32/ARM64, macOS x64/ARM64, Windows x64/x32/ARM64)
-- [ ] 5.3 Configure CI artifact upload for native build outputs from matrix jobs
-- [ ] 5.4 Generate native artifact filenames matching the platform mapping consumed by the Node loader (including linux-x32, win32-x32, win32-arm64)
-- [ ] 5.5 Add release-time templates for scoped backend npm packages
-- [ ] 5.6 Generate package metadata for platform backend packages from a single source of truth
-- [ ] 5.7 Add package validation for the pure JS main package and generated platform backend packages
-- [ ] 5.8 Declare Nx cache outputs for Go binaries, JS package output, and generated native package directories
+- [x] 5.1 Add cross-build scripts for supported Linux, macOS, and Windows targets
+- [x] 5.2 Set up GitHub Actions Matrix workflow for parallel cross-platform builds (Linux x64/x32/ARM64, macOS x64/ARM64, Windows x64/x32/ARM64)
+- [x] 5.3 Configure CI artifact upload for native build outputs from matrix jobs
+- [x] 5.4 Generate native artifact filenames matching the platform mapping consumed by the Node loader (including linux-x32, win32-x32, win32-arm64)
+- [x] 5.5 Add release-time templates for scoped backend npm packages
+- [x] 5.6 Generate package metadata for platform backend packages from a single source of truth
+- [x] 5.7 Add package validation for the pure JS main package and generated platform backend packages
+- [x] 5.8 Declare Nx cache outputs for Go binaries, JS package output, and generated native package directories
 
 ## 6. CI and Release Gates
 
