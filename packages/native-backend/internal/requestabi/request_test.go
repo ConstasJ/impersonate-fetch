@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 )
@@ -119,5 +120,41 @@ func TestHandleRequestJSONReturnsBufferedNativeResponse(t *testing.T) {
 	}
 	if response.Raw == "" {
 		t.Fatalf("expected raw response payload")
+	}
+}
+
+func TestHandleRequestJSONReportsTransportErrorPrefix(t *testing.T) {
+	payload, id := HandleRequestJSON(`{
+		"Id":"session-transport-error",
+		"Method":"GET",
+		"Url":"http://127.0.0.1:1/unreachable",
+		"Timeout":1
+	}`)
+	if id != "" {
+		t.Fatalf("transport error should not allocate id, got %q", id)
+	}
+
+	var response bufferedResponse
+	if err := json.Unmarshal([]byte(payload), &response); err != nil {
+		t.Fatalf("response is not JSON: %v", err)
+	}
+	if !strings.HasPrefix(response.Err, "request->response, err := GetSession(requestParams.Id).Request(requestParams.Method, requestParams.Url, req) failed: ") {
+		t.Fatalf("unexpected transport err prefix: %q", response.Err)
+	}
+}
+
+func TestRequestMarshalErrorPrefixesStayReferenceCompatible(t *testing.T) {
+	source, err := os.ReadFile("request.go")
+	if err != nil {
+		t.Fatalf("read request.go: %v", err)
+	}
+	for _, prefix := range []string{
+		"request->responseParamsString, err := json.Marshal(responseParams) failed: ",
+		"stream_request->json.Marshal failed: ",
+		"stream_read->json.Marshal failed: ",
+	} {
+		if !strings.Contains(string(source), prefix) {
+			t.Fatalf("missing marshal prefix %q", prefix)
+		}
 	}
 }

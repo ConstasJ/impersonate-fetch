@@ -128,6 +128,26 @@ func TestHandleStreamRequestJSONReportsReferenceErrors(t *testing.T) {
 	}
 }
 
+func TestHandleStreamRequestJSONReportsTransportErrorPrefix(t *testing.T) {
+	payload, streamID := HandleStreamRequestJSON(`{
+		"Id":"stream-transport-error",
+		"Method":"GET",
+		"Url":"http://127.0.0.1:1/unreachable",
+		"Timeout":1
+	}`)
+	if streamID != "" {
+		t.Fatalf("transport error should not allocate stream id, got %q", streamID)
+	}
+
+	var response streamOpenResponse
+	if err := json.Unmarshal([]byte(payload), &response); err != nil {
+		t.Fatalf("response is not JSON: %v", err)
+	}
+	if !strings.HasPrefix(response.Err, "stream_request->session.Request failed: ") {
+		t.Fatalf("unexpected stream transport err prefix: %q", response.Err)
+	}
+}
+
 func mustReadPayload(t *testing.T, streamID string, size int) string {
 	t.Helper()
 	payload, _ := HandleStreamRead(streamID, size)
