@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, resolve } from 'node:path';
 import { describe, it } from 'vitest';
@@ -72,7 +72,7 @@ describe('native-assets resolver', () => {
         assert.equal(info.arch, arch);
         assert.equal(info.filename, filename);
         assert.equal(basename(info.path), filename);
-        assert.equal(info.dependenciesDir, scopedPackageDir);
+        assert.equal(realpathSync(info.dependenciesDir), realpathSync(scopedPackageDir));
       } finally {
         rmSync(tempRoot, { recursive: true, force: true });
       }
@@ -110,7 +110,7 @@ describe('native-assets resolver', () => {
       const info = getNativeAssetInfo('win32', 'x64', { root: packageRoot });
 
       assert.equal(info.filename, sourceBuiltFilename);
-      assert.equal(info.dependenciesDir, sourceBuiltDir);
+      assert.equal(realpathSync(info.dependenciesDir), realpathSync(sourceBuiltDir));
       assert.equal(basename(info.path), sourceBuiltFilename);
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
@@ -132,7 +132,7 @@ describe('native-assets resolver', () => {
       const info = getNativeAssetInfo('win32', 'x64', { root: packageRoot });
 
       assert.equal(info.filename, sourceFilename);
-      assert.equal(info.dependenciesDir, scopedPackageDir);
+      assert.equal(realpathSync(info.dependenciesDir), realpathSync(scopedPackageDir));
       assert.equal(basename(info.path), sourceFilename);
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });

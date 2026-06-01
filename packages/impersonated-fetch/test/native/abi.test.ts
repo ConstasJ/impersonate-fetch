@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import koffi from 'koffi';
 import { describe, it } from 'vitest';
 import { nativeAbiKoffiSignatures, nativeAbiSymbolNames } from '@/native/abi.js';
-import { getNativeAssetInfo } from '@/native/assets.js';
+import type { NativeAssetInfo } from '@/native/assets.js';
+import { getNativeAssetInfo, NativeAssetNotFoundError } from '@/native/assets.js';
 
 type NativeAbiProbeMode = 'direct' | 'requiresShim';
 
@@ -13,9 +14,14 @@ interface NativeAbiProbeResult {
   reason?: string;
 }
 
+const currentNativeAsset = getCurrentNativeAssetInfo();
+const nativeAbiIt = currentNativeAsset ? it : it.skip;
+
 describe('native-abi contract', () => {
-  it('native-abi loads the current platform asset with Koffi and exposes symbols', () => {
-    const result = probeNativeAbi();
+  nativeAbiIt('native-abi loads the current platform asset with Koffi and exposes symbols', () => {
+    assert.ok(currentNativeAsset);
+
+    const result = probeNativeAbi(currentNativeAsset);
 
     assert.match(result.assetPath, /(requests-go|impersonated-fetch-backend).*\.(dll|so|dylib)$/);
     assert.deepEqual(result.checkedSymbols, nativeAbiSymbolNames);
@@ -23,9 +29,7 @@ describe('native-abi contract', () => {
   });
 });
 
-function probeNativeAbi(): NativeAbiProbeResult {
-  const asset = getNativeAssetInfo();
-
+function probeNativeAbi(asset: NativeAssetInfo): NativeAbiProbeResult {
   try {
     const library = koffi.load(asset.path);
     const missingSymbol = nativeAbiSymbolNames.find(
@@ -54,6 +58,18 @@ function probeNativeAbi(): NativeAbiProbeResult {
     assetPath: asset.path,
     checkedSymbols: nativeAbiSymbolNames,
   };
+}
+
+function getCurrentNativeAssetInfo(): NativeAssetInfo | undefined {
+  try {
+    return getNativeAssetInfo();
+  } catch (error) {
+    if (error instanceof NativeAssetNotFoundError) {
+      return undefined;
+    }
+
+    throw error;
+  }
 }
 
 function errorName(error: unknown): string {
