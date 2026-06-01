@@ -43,9 +43,7 @@ jobs:
             apt: gcc-multilib
             cc: gcc -m32
           - target: linux-arm64
-            os: ubuntu-latest
-            apt: gcc-aarch64-linux-gnu
-            cc: aarch64-linux-gnu-gcc
+            os: ubuntu-24.04-arm
           - target: darwin-x64
             os: macos-15-intel
           - target: darwin-arm64
@@ -63,7 +61,7 @@ jobs:
             msys-bin: mingw32
             cc: gcc
           - target: win32-arm64
-            os: windows-latest
+            os: windows-11-arm
             msystem: CLANGARM64
             msys-package: mingw-w64-clang-aarch64-clang
             msys-bin: clangarm64
