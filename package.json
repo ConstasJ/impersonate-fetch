@@ -1,51 +1,26 @@
 {
-  "name": "impersonated-fetch",
-  "version": "0.0-development",
-  "type": "module",
+  "name": "impersonated-fetch-workspace",
+  "private": true,
   "packageManager": "pnpm@11.4.0",
-  "description": "Node.js fetch port scaffold for requests_go impersonation backend",
-  "main": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE",
-    "native/*.dll",
-    "native/*.dylib",
-    "native/*.so"
-  ],
   "scripts": {
-    "build": "tsdown",
-    "package:check": "pnpm run build && vitest run test/package/package-check.test.mjs",
-    "native-assets:check": "pnpm run build && vitest run test/package/package-check.test.mjs",
-    "test": "pnpm run build && vitest run",
-    "test:watch": "vitest",
-    "test:fingerprint": "pnpm run build && vitest run test/fingerprint/smoke.test.ts -t fingerprint-smoke",
-    "test:native-assets": "pnpm run build && vitest run test/native/assets.test.ts",
-    "test:package": "pnpm run build && vitest run test/package/package-check.test.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "typecheck:examples": "tsc -p tsconfig.examples.json --noEmit",
-    "lint": "biome check .",
-    "lint:fix": "biome check . --write",
-    "format": "biome format . --write",
-    "format:check": "biome format ."
-  },
-  "dependencies": {
-    "koffi": "^2.16.2",
-    "tough-cookie": "^6.0.1",
-    "zod": "^4.4.3"
+    "build": "nx run impersonated-fetch:build",
+    "typecheck": "nx run impersonated-fetch:typecheck",
+    "typecheck:examples": "nx run impersonated-fetch:typecheck-examples",
+    "lint": "nx run impersonated-fetch:lint",
+    "test": "nx run impersonated-fetch:test",
+    "test:fingerprint": "nx run impersonated-fetch:test-fingerprint",
+    "test:native-assets": "nx run impersonated-fetch:test-native-assets",
+    "test:package": "nx run impersonated-fetch:test-package",
+    "package:check": "nx run impersonated-fetch:package-check",
+    "native-assets:check": "nx run impersonated-fetch:native-assets-check",
+    "native-backend:build": "nx run native-backend:build",
+    "native-backend:lint": "nx run native-backend:lint",
+    "native-backend:package-generate": "nx run native-backend:native-package-generate",
+    "native-backend:package-plan": "nx run native-backend:native-package-plan",
+    "native-backend:test-artifact": "nx run native-backend:test-artifact",
+    "native-backend:test": "nx run native-backend:test"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.16",
-    "@types/node": "^25.9.1",
-    "tsdown": "^0.22.1",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.7"
+    "nx": "^22.7.5"
   }
 }

@@ -3,7 +3,9 @@ node_modules/
 dist/
 .omo/
 .opencode/
+.nx/
 !native/*
+!packages/impersonated-fetch/native/*
 refs/
 .worktrees/
 .nx/

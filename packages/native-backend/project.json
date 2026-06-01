@@ -1,0 +1,55 @@
+{
+  "name": "native-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "root": "packages/native-backend",
+  "sourceRoot": "packages/native-backend/cmd",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run build",
+        "cwd": "packages/native-backend"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run lint",
+        "cwd": "packages/native-backend"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run test",
+        "cwd": "packages/native-backend"
+      }
+    },
+    "test-artifact": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run test:artifact",
+        "cwd": "packages/native-backend"
+      }
+    },
+    "native-package-plan": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run package:plan",
+        "cwd": "packages/native-backend"
+      },
+      "outputs": ["{projectRoot}/dist/native-packages"]
+    },
+    "native-package-generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run package:generate",
+        "cwd": "packages/native-backend"
+      },
+      "outputs": ["{projectRoot}/dist/native-packages"]
+    }
+  },
+  "tags": ["scope:native-backend", "type:go-package"]
+}

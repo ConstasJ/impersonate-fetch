@@ -1,0 +1,16 @@
+{
+  "name": "@impersonated-fetch/native-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-host.mjs",
+    "build:target": "node scripts/build-target.mjs",
+    "format": "gofmt -w cmd internal",
+    "lint": "node scripts/check-format.mjs",
+    "package:generate": "node scripts/generate-native-packages.mjs",
+    "package:plan": "node scripts/native-package-plan.mjs",
+    "package:validate": "node scripts/generate-native-packages.mjs --validate",
+    "test": "go test ./... && node --test scripts/abi-reference-map.test.mjs scripts/platform-assets.test.mjs scripts/native-package-generation.test.mjs",
+    "test:artifact": "node --test scripts/native-artifact.test.mjs"
+  }
+}

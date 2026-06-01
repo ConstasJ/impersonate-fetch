@@ -17,6 +17,58 @@ permissions:
   contents: read
 
 jobs:
+  affected-js:
+    name: Nx affected JS checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.4.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Run affected JS targets
+        shell: pwsh
+        run: |
+          $base = if ('${{ github.event_name }}' -eq 'pull_request') { 'origin/${{ github.base_ref }}' } else { 'HEAD~1' }
+          pnpm nx affected -t build,typecheck,lint,test --base=$base --head=HEAD
+
+  native-host:
+    name: Native backend host build/test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.4.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: packages/native-backend/go.mod
+          cache-dependency-path: packages/native-backend/go.sum
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build native backend through Nx
+        run: pnpm nx run native-backend:build
+      - name: Test native backend through Nx
+        run: pnpm nx run native-backend:test
+
   build:
     name: Build (${{ matrix.os }})
     runs-on: ${{ matrix.os }}

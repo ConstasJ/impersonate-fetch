@@ -1,4 +1,9 @@
+packages:
+  - 'packages/*'
+
 allowBuilds:
-  - koffi
+  koffi: true
+  nx: true
+
 minimumReleaseAgeExclude:
   - tsdown@0.22.1

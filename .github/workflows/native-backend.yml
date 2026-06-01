@@ -1,0 +1,104 @@
+name: Native backend
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/native-backend.yml'
+      - 'packages/native-backend/**'
+      - 'packages/impersonated-fetch/src/native/**'
+
+permissions:
+  contents: read
+
+jobs:
+  build-native:
+    name: Build native backend (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux-x64
+            os: ubuntu-latest
+          - target: linux-x32
+            os: ubuntu-latest
+            apt: gcc-multilib
+            cc: gcc -m32
+          - target: linux-arm64
+            os: ubuntu-latest
+            apt: gcc-aarch64-linux-gnu
+            cc: aarch64-linux-gnu-gcc
+          - target: darwin-x64
+            os: macos-13
+          - target: darwin-arm64
+            os: macos-14
+          - target: win32-x64
+            os: windows-latest
+            msystem: UCRT64
+            msys-package: mingw-w64-ucrt-x86_64-gcc
+            msys-path: C:\msys64\ucrt64\bin
+          - target: win32-x32
+            os: windows-latest
+            msystem: MINGW32
+            msys-package: mingw-w64-i686-gcc
+            msys-path: C:\msys64\mingw32\bin
+          - target: win32-arm64
+            os: windows-latest
+            msystem: CLANGARM64
+            msys-package: mingw-w64-clang-aarch64-clang
+            msys-path: C:\msys64\clangarm64\bin
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: packages/native-backend/go.mod
+          cache-dependency-path: packages/native-backend/go.sum
+
+      - name: Install Linux cross compiler
+        if: ${{ runner.os == 'Linux' && matrix.apt }}
+        run: sudo apt-get update && sudo apt-get install -y ${{ matrix.apt }}
+
+      - name: Setup MSYS2 compiler
+        if: ${{ runner.os == 'Windows' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: true
+          install: ${{ matrix.msys-package }}
+
+      - name: Add MSYS2 compiler to PATH
+        if: ${{ runner.os == 'Windows' }}
+        shell: pwsh
+        run: echo "${{ matrix.msys-path }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build native backend
+        shell: pwsh
+        env:
+          CC: ${{ matrix.cc }}
+        run: pnpm --filter @impersonated-fetch/native-backend run build:target -- --target ${{ matrix.target }}
+
+      - name: Upload native backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-backend-${{ matrix.target }}
+          path: packages/native-backend/dist/impersonated-fetch-backend-*
+          if-no-files-found: error
