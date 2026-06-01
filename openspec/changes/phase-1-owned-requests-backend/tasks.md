@@ -58,7 +58,7 @@
 
 ## 7. Documentation and Handoff
 
-- [ ] 7.1 Document the Phase 1 backend as a transitional `requests`-based compatibility backend
-- [ ] 7.2 Document the generated scoped backend package naming scheme and runtime resolution order
-- [ ] 7.3 Document rollback behavior to the current closed backend while Phase 1 parity is being validated
-- [ ] 7.4 Update contributor notes with the Phase 2 refactor direction toward direct `chttp` usage
+- [x] 7.1 Document the Phase 1 backend as a transitional `requests`-based compatibility backend
+- [x] 7.2 Document the generated scoped backend package naming scheme and runtime resolution order
+- [x] 7.3 Document rollback behavior to the current closed backend while Phase 1 parity is being validated
+- [x] 7.4 Update contributor notes with the Phase 2 refactor direction toward direct `chttp` usage
