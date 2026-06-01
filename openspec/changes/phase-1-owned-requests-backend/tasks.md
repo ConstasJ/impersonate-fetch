@@ -1,8 +1,8 @@
 ## 1. Baseline and Workspace Setup
 
-- [ ] 1.1 Convert the repository into an Nx-managed pnpm monorepo with explicit source workspace globs
+- [x] 1.1 Convert the repository into an Nx-managed pnpm monorepo with explicit source workspace globs
 - [ ] 1.2 Define Nx projects for `packages/impersonated-fetch` (pure JS package), `packages/native-backend` (Go backend), and native package generation workflow
-- [ ] 1.3 Move the main `impersonated-fetch` package source to `packages/impersonated-fetch`
+- [x] 1.3 Move the main `impersonated-fetch` package source to `packages/impersonated-fetch`
 - [ ] 1.4 Define the Phase 1 Go backend directory at `packages/native-backend` with module layout for a single unified backend source package
 - [ ] 1.5 Add Go toolchain documentation and local build prerequisites for contributors
 - [ ] 1.6 Add backend build scripts for the current host platform without changing default package loading behavior
