@@ -1,0 +1,161 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: npm release version to publish, for example 1.2.3
+        required: true
+        type: string
+      native_run_id:
+        description: Successful Native backend workflow run id to consume
+        required: true
+        type: string
+      license_approval:
+        description: Type approved after recording Phase 1 license/shipping approval
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+  id-token: write
+
+jobs:
+  license-gate:
+    name: License/shipping approval gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require approval
+        if: ${{ inputs.license_approval != 'approved' }}
+        run: |
+          echo "Phase 1 native package publishing is blocked until license/shipping approval is recorded."
+          exit 1
+
+  publish:
+    name: Publish npm packages
+    needs: license-gate
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate release version and npm availability
+        run: |
+          node --input-type=module <<'JS'
+          import { execFileSync } from 'node:child_process';
+
+          import { platforms } from './packages/native-backend/scripts/platform-assets.mjs';
+
+          const version = process.env.RELEASE_VERSION;
+          const semverPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
+
+          if (!semverPattern.test(version)) {
+            throw new Error(`release version must be legal semver: ${version}`);
+          }
+          if (version === '0.0-development') {
+            throw new Error('release version must not be 0.0-development');
+          }
+
+          const packageNames = ['impersonated-fetch', ...platforms.map((platform) => platform.packageName)];
+          const published = [];
+
+          for (const packageName of packageNames) {
+            try {
+              execFileSync('npm', ['view', `${packageName}@${version}`, 'version'], {
+                encoding: 'utf8',
+                stdio: 'pipe',
+              });
+              published.push(`${packageName}@${version}`);
+            } catch (error) {
+              if (error.status === 1) {
+                continue;
+              }
+              throw error;
+            }
+          }
+
+          if (published.length > 0) {
+            throw new Error(`release version is already published: ${published.join(', ')}`);
+          }
+          JS
+
+      - name: Download matrix native artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.native_run_id }}
+          pattern: native-backend-*
+          path: packages/native-backend/dist/release-artifacts
+          merge-multiple: true
+
+      - name: Generate scoped backend packages
+        run: >-
+          pnpm --filter @impersonated-fetch/native-backend run package:generate --
+          --artifacts-dir dist/release-artifacts
+          --output-dir dist/native-packages/packages
+          --version "$RELEASE_VERSION"
+
+      - name: Validate scoped backend packages
+        run: >-
+          pnpm --filter @impersonated-fetch/native-backend run package:validate --
+          --artifacts-dir dist/release-artifacts
+          --output-dir dist/native-packages/packages
+          --version "$RELEASE_VERSION"
+
+      - name: Apply main package release version
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync, writeFileSync } from 'node:fs';
+
+          const packageJsonPath = 'packages/impersonated-fetch/package.json';
+          const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+          packageJson.version = process.env.RELEASE_VERSION;
+          writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
+          JS
+
+      - name: Build and validate main package
+        run: pnpm run package:check
+
+      - name: Publish scoped backend packages
+        run: |
+          node --input-type=module <<'JS'
+          import { execFileSync } from 'node:child_process';
+          import { readFileSync } from 'node:fs';
+
+          const manifest = JSON.parse(
+            readFileSync('packages/native-backend/dist/native-packages/manifest.json', 'utf8'),
+          );
+          const packages = [...manifest.packages].sort((left, right) =>
+            left.packageName.localeCompare(right.packageName),
+          );
+
+          for (const packageInfo of packages) {
+            execFileSync(
+              'npm',
+              ['publish', packageInfo.packageDir, '--access', 'public', '--provenance'],
+              { stdio: 'inherit' },
+            );
+          }
+          JS
+
+      - name: Publish main package
+        run: npm publish packages/impersonated-fetch --access public --provenance
