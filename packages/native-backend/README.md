@@ -74,6 +74,25 @@ pnpm --filter @impersonated-fetch/native-backend run package:generate
 pnpm --filter @impersonated-fetch/native-backend run package:validate
 ```
 
+For a release, run the GitHub Actions `Release` workflow manually from `.github/workflows/release.yml`.
+The workflow requires:
+
+- `version`: the exact npm semver version to publish. It must not be `0.0-development`, and the
+  workflow checks that `impersonated-fetch` and every generated `@impersonated-fetch/backend-*`
+  package do not already have that version on npm.
+- `native_run_id`: a successful `Native backend` workflow run id. The release workflow downloads
+  its `native-backend-*` artifacts and uses them as the package source.
+- `license_approval`: the literal value `approved` after the Phase 1 license/shipping approval has
+  been recorded.
+- `NPM_TOKEN`: an npm publishing credential configured as a repository secret for npm registry
+  authentication.
+
+The workflow generates backend packages with the dispatch `version`, validates their metadata and
+artifacts, temporarily writes the same version into `packages/impersonated-fetch/package.json`, runs
+the main package pack check, publishes all generated backend packages to npm first, and publishes the
+main `impersonated-fetch` package last. Automatic version management is intentionally left for a
+follow-up workflow once the manual release path is proven.
+
 ## Rollback and parity posture
 
 The main package no longer ships the bundled closed backend as a fallback. If a generated backend
