@@ -190,8 +190,15 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: packages/native-backend/go.mod
+          cache-dependency-path: packages/native-backend/go.sum
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Build native backend
+        run: pnpm nx run native-backend:build
       - name: Build
         run: pnpm run build
       - name: Run network fingerprint smoke
