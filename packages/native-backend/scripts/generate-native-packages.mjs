@@ -47,6 +47,7 @@ export function generateNativePackages(options = {}) {
 
 export function validateNativePackages(options = {}) {
   const outputDir = resolve(options.outputDir ?? 'dist/native-packages/packages');
+  const expectedVersion = options.expectedVersion;
   const packages = [];
 
   for (const platform of platforms) {
@@ -61,6 +62,9 @@ export function validateNativePackages(options = {}) {
     const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
     if (metadata.name !== platform.packageName) {
       throw new Error(`generated package name mismatch for ${platform.target}`);
+    }
+    if (expectedVersion !== undefined && metadata.version !== expectedVersion) {
+      throw new Error(`generated package version mismatch for ${platform.target}`);
     }
     if (!existsSync(assetPath)) {
       throw new Error(`missing generated package asset ${platform.assetName}`);
@@ -100,10 +104,13 @@ function readMainPackageVersion() {
 }
 
 function parseArgs(argv) {
+  const version = readOption(argv, '--version');
+
   return {
     artifactsDir: readOption(argv, '--artifacts-dir'),
+    expectedVersion: version,
     outputDir: readOption(argv, '--output-dir'),
-    version: readOption(argv, '--version'),
+    version,
     validate: argv.includes('--validate'),
   };
 }
@@ -118,7 +125,7 @@ function readOption(argv, name) {
   return argv[index + 1];
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const options = parseArgs(process.argv.slice(2));
   const manifest = generateNativePackages(options);
   if (options.validate) {

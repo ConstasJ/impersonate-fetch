@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -71,4 +72,34 @@ test('generated backend packages use shared platform metadata and copied artifac
       `artifact:${platform.target}`,
     );
   }
+});
+
+test('generated backend package validation rejects mismatched release versions', () => {
+  const workspace = mkdtempSync(join(tmpdir(), 'native-packages-'));
+  const artifactsDir = join(workspace, 'artifacts');
+  const outputDir = join(workspace, 'packages');
+  mkdirSync(artifactsDir, { recursive: true });
+
+  for (const platform of platforms) {
+    writeFileSync(join(artifactsDir, platform.assetName), `artifact:${platform.target}`);
+  }
+
+  generateNativePackages({
+    artifactsDir,
+    outputDir,
+    version: '1.2.3',
+  });
+
+  assert.throws(
+    () => validateNativePackages({ expectedVersion: '1.2.4', outputDir }),
+    /generated package version mismatch for linux-x64/,
+  );
+});
+
+test('native package tooling can be imported from eval release scripts', () => {
+  execFileSync(process.execPath, [
+    '--input-type=module',
+    '-e',
+    "import './scripts/generate-native-packages.mjs';",
+  ]);
 });
