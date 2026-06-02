@@ -89,12 +89,20 @@ The system SHALL include tests that compare the source-owned backend against the
 - **AND** differential tests load the closed oracle from a test fixture path or explicit environment variable instead of `packages/impersonated-fetch/native/*`
 
 ### Requirement: Platform backend package generation
-The system SHALL generate scoped platform-specific npm backend packages from compiled artifacts during CI/release flow using artifacts produced by the GitHub Actions Matrix builds, and those generated packages SHALL be the production native artifact source for the main package.
+The system SHALL generate scoped platform-specific npm backend packages from compiled artifacts during
+CI/release flow using artifacts produced by the GitHub Actions Matrix builds, and those generated
+packages SHALL be published as part of the npm release so they are the production native artifact
+source for the main package.
 
 #### Scenario: Platform package is generated
 - **WHEN** release packaging runs for a supported platform target
 - **THEN** the system generates a scoped npm package such as `@impersonated-fetch/backend-linux-x64` containing the corresponding backend artifact and package metadata
 - **AND** packages are generated from CI artifacts produced by the matrix build workflow
+
+#### Scenario: Platform package is published to npm
+- **WHEN** the npm release workflow publishes a release version
+- **THEN** each generated scoped backend package for the supported platform matrix is published to npm with that release version
+- **AND** the release version matches the main `impersonated-fetch` package version
 
 #### Scenario: Main package remains pure JavaScript
 - **WHEN** the main `impersonated-fetch` npm package at `packages/impersonated-fetch` is packed
@@ -171,4 +179,3 @@ The Phase 1 backend SHALL use the extracted IDA pseudocode files under `refs/psu
 #### Scenario: Pseudocode conflicts with tests
 - **WHEN** pseudocode-derived behavior conflicts with runnable oracle or contract tests
 - **THEN** the implementation treats the executable test result as authoritative and records the compatibility decision
-
