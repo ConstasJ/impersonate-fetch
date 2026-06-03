@@ -164,4 +164,9 @@ jobs:
 
       - name: Publish main package
         # Trusted publishing: no --provenance flag needed, automatically generated
-        run: npm publish ./packages/impersonated-fetch --access public
+        run: |
+          MAIN_PACKAGE_TARBALL="$(
+            npm pack ./packages/impersonated-fetch --pack-destination "$RUNNER_TEMP" --json |
+              node --input-type=module -e "const chunks = []; for await (const chunk of process.stdin) chunks.push(chunk); const [pack] = JSON.parse(Buffer.concat(chunks).toString('utf8')); console.log(process.env.RUNNER_TEMP + '/' + pack.filename);"
+          )"
+          npm publish "$MAIN_PACKAGE_TARBALL" --access public

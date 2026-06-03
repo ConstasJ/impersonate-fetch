@@ -85,6 +85,17 @@ describe('package contents', () => {
     const restoredPackageJson = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
     assert.equal(restoredPackageJson.optionalDependencies, undefined);
   });
+
+  it('release workflow publishes the packed main package tarball', () => {
+    const workflow = readFileSync(
+      resolve(root, '..', '..', '.github', 'workflows', 'release.yml'),
+      'utf8',
+    );
+
+    assert.match(workflow, /npm pack \.\/packages\/impersonated-fetch --pack-destination/);
+    assert.match(workflow, /npm publish "\$MAIN_PACKAGE_TARBALL" --access public/);
+    assert.doesNotMatch(workflow, /npm publish \.\/packages\/impersonated-fetch --access public/);
+  });
 });
 
 describe('package entrypoints', () => {
