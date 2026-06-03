@@ -3,6 +3,10 @@
   "version": "0.0-development",
   "type": "module",
   "description": "Node.js fetch port scaffold for requests_go impersonation backend",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConstasJ/impersonate-fetch.git"
+  },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
   "exports": {
