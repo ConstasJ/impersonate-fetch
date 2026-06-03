@@ -158,4 +158,4 @@ jobs:
           JS
 
       - name: Publish main package
-        run: npm publish packages/impersonated-fetch --access public --provenance
+        run: npm publish ./packages/impersonated-fetch --access public --provenance
