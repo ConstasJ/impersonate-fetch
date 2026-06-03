@@ -74,6 +74,25 @@ pnpm --filter @impersonated-fetch/native-backend run package:generate
 pnpm --filter @impersonated-fetch/native-backend run package:validate
 ```
 
+## CI and release artifact workflow
+
+The root `CI` workflow is the ordinary validation surface for pull requests and `master` pushes. It
+runs Nx affected JavaScript checks, the host native backend build/test, package validation, native
+asset checks, and OS build/test matrices. Root package metadata, lockfile-only, and JavaScript-only
+pull requests should rely on CI instead of automatically producing the full native backend artifact
+matrix.
+
+The `Native backend` workflow is the cross-platform artifact producer. It keeps the full eight-target
+matrix for manual `workflow_dispatch` runs and path-filtered pushes to `master` that affect native
+artifact inputs. Pull request triggers are intentionally limited to native-critical files: the native
+workflow itself, `packages/native-backend/**`, and runtime native loader/package mapping files under
+`packages/impersonated-fetch/src/native/**`.
+
+Use manual `workflow_dispatch` on `Native backend` when maintainers need fresh trusted artifacts for a
+release candidate, when validating high-risk dependency/toolchain changes before release, or when a
+release rebuild is needed without another source change. Use the successful run id from that trusted
+workflow as the release `native_run_id`.
+
 For a release, run the GitHub Actions `Release` workflow manually from `.github/workflows/release.yml`.
 The workflow requires:
 
