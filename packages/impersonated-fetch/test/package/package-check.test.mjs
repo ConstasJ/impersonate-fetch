@@ -105,6 +105,16 @@ describe('package contents', () => {
     assert.match(workflow, /version\.includes\('-'\)/);
     assert.match(workflow, /release version must be a stable semver version/);
   });
+
+  it('release workflow rejects build metadata versions before npm publish', () => {
+    const workflow = readFileSync(
+      resolve(root, '..', '..', '.github', 'workflows', 'release.yml'),
+      'utf8',
+    );
+
+    assert.match(workflow, /version\.includes\('\+'\)/);
+    assert.match(workflow, /release version must not include build metadata/);
+  });
 });
 
 describe('package entrypoints', () => {
