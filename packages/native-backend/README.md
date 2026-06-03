@@ -103,8 +103,8 @@ The workflow requires:
   its `native-backend-*` artifacts and uses them as the package source.
 - `license_approval`: the literal value `approved` after the Phase 1 license/shipping approval has
   been recorded.
-- `NPM_TOKEN`: an npm publishing credential configured as a repository secret for npm registry
-  authentication.
+- npm Trusted Publishing configured for `release.yml` on every package, including
+  `impersonated-fetch` and each generated `@impersonated-fetch/backend-*` package.
 
 The workflow generates backend packages with the dispatch `version`, validates their metadata and
 artifacts, temporarily writes the same version into `packages/impersonated-fetch/package.json`, runs

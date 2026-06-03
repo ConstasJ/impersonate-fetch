@@ -96,6 +96,16 @@ describe('package contents', () => {
     assert.match(workflow, /npm publish "\$MAIN_PACKAGE_TARBALL" --access public/);
     assert.doesNotMatch(workflow, /npm publish \.\/packages\/impersonated-fetch --access public/);
   });
+
+  it('release workflow uses npm 11 capable Node for trusted publishing', () => {
+    const workflow = readFileSync(
+      resolve(root, '..', '..', '.github', 'workflows', 'release.yml'),
+      'utf8',
+    );
+
+    assert.match(workflow, /node-version: 24/);
+    assert.doesNotMatch(workflow, /node-version: 22/);
+  });
 });
 
 describe('package entrypoints', () => {
