@@ -7,9 +7,16 @@ import { randomizeJa3, tlsConfigFromBrowserFingerprint } from '@/impersonation/f
 import {
   getBrowserPreset,
   getTLSPreset,
+  TLS_CHROME_148,
   TLS_CHROME_LATEST,
   TLS_FIREFOX_105,
 } from '@/impersonation/presets.js';
+
+const chrome148Ja3 =
+  '771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,18-5-65281-27-43-0-51-13-65037-10-23-35-16-11-45-17613-41,4588-29-23-24,0';
+
+const chrome148UserAgent =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36';
 
 const readmeTlsConfigFixture = {
   id: 'readme-example',
@@ -264,6 +271,31 @@ describe('impersonation-types', () => {
     assert.equal(firefoxNative.http2_settings.priority_frames?.[5]?.streamID, 13);
     assert.deepEqual(safariIos.pseudoHeaderOrder, [':method', ':scheme', ':path', ':authority']);
     assert.equal(tlsConfigToSnakeCase(safariIos).tls_extensions.client_hello_hex_stream, '');
+  });
+
+  it('exposes Chrome 148 as the latest Chrome TLS preset', () => {
+    const latestChrome = getTLSPreset('TLS_CHROME_LATEST');
+    const explicitChrome = getTLSPreset('TLS_CHROME_148');
+    const browserChrome = getBrowserPreset('chrome');
+
+    assert.notEqual(latestChrome, TLS_CHROME_LATEST);
+    assert.notEqual(explicitChrome, TLS_CHROME_148);
+    assert.equal(TLS_CHROME_148.ja3, chrome148Ja3);
+    assert.equal(TLS_CHROME_148.userAgent, chrome148UserAgent);
+    assert.equal(latestChrome.ja3, chrome148Ja3);
+    assert.equal(browserChrome.ja3, chrome148Ja3);
+    assert.deepEqual(TLS_CHROME_148.tlsExtensions.keyShareCurves, ['GREASE', '4588', 'X25519']);
+    assert.deepEqual(TLS_CHROME_148.http2Settings.settingsOrder, [
+      'HEADER_TABLE_SIZE',
+      'ENABLE_PUSH',
+      'INITIAL_WINDOW_SIZE',
+      'MAX_HEADER_LIST_SIZE',
+    ]);
+    assert.deepEqual(TLS_CHROME_148.http2Settings.headerPriority, {
+      weight: 256,
+      streamDep: 0,
+      exclusive: true,
+    });
   });
 
   it('randomizes JA3 extension order while keeping PSK extension 41 last', () => {

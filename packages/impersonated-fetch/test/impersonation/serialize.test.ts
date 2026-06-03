@@ -15,6 +15,9 @@ const root = resolve(here, '..', '..');
 const fixtures = resolve(root, 'test', 'fixtures', 'impersonation');
 const evidence = resolve(root, '.omo', 'evidence');
 
+const chrome148Ja3 =
+  '771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,18-5-65281-27-43-0-51-13-65037-10-23-35-16-11-45-17613-41,4588-29-23-24,0';
+
 describe('impersonation-serialize', () => {
   it('impersonation-serialize snapshots Chrome preset native payload', () => {
     const payload = serializeNativeRequest(baseRequest({ preset: 'chrome' }));
@@ -22,7 +25,8 @@ describe('impersonation-serialize', () => {
     const http2Settings = parseNativeJson(payload.HTTP2Settings);
 
     writeEvidence('task-9-chrome-payload.snap', payload);
-    assert.equal(payload.Id, 'a1695ccf-1445-4a0e-ae83-f817c64027e5');
+    assert.equal(payload.Id, '91f4cfcb-3a35-4b64-9c1b-2b2f0e2dbd7a');
+    assert.equal(payload.Ja3, chrome148Ja3);
     assert.equal(payload.RandomJA3, true);
     assert.deepEqual(payload.HeadersOrder, [
       'cache-control',

@@ -76,6 +76,9 @@ const chromeHttp2Settings = {
   priority_frames: null,
 };
 
+const chrome148UserAgent =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36';
+
 const firefoxExtensions = {
   supported_signature_algorithms: [
     'ecdsa_secp256r1_sha256',
@@ -156,8 +159,8 @@ const firefox105PriorityFrames = [
 
 const presetPayloads = {
   TLS_CHROME_LATEST: {
-    id: 'a1695ccf-1445-4a0e-ae83-f817c64027e5',
-    ja3: '771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,45-10-23-35-27-16-18-13-17613-65037-11-51-65281-5-0-43-41,4588-29-23-24,0',
+    id: '91f4cfcb-3a35-4b64-9c1b-2b2f0e2dbd7a',
+    ja3: '771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,18-5-65281-27-43-0-51-13-65037-10-23-35-16-11-45-17613-41,4588-29-23-24,0',
     random_ja3: true,
     headers_order: chromeHeadersOrder,
     un_changed_header_key: null,
@@ -165,7 +168,7 @@ const presetPayloads = {
     pseudo_header_order: [':method', ':authority', ':scheme', ':path'],
     tls_extensions: chromeExtensions,
     http2_settings: chromeHttp2Settings,
-    user_agent: '',
+    user_agent: chrome148UserAgent,
   },
   TLS_CHROME_110: {
     id: 'f5e378c9-838e-45f8-98ee-012c9f6b4e7f',
@@ -353,6 +356,7 @@ const presetPayloads = {
 } satisfies Record<string, Partial<TLSConfigPayload>>;
 
 export const TLS_CHROME_LATEST = tlsConfigFromSnakeCase(presetPayloads.TLS_CHROME_LATEST);
+export const TLS_CHROME_148 = TLS_CHROME_LATEST;
 export const TLS_CHROME_131 = tlsConfigFromSnakeCase({
   ...presetPayloads.TLS_CHROME_LATEST,
   id: '6125808d-ccc4-4f4b-9b26-e0c7abd3b279',
@@ -453,6 +457,7 @@ export const browserPresets = {
 
 export const tlsPresets = {
   TLS_CHROME_LATEST,
+  TLS_CHROME_148,
   TLS_CHROME_131_LATEST,
   TLS_CHROME_131,
   TLS_CHROME_130_SAFE,
