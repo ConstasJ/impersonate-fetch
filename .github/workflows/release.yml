@@ -56,7 +56,7 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --no-optional
 
       - name: Validate release version and npm availability
         run: |
@@ -73,6 +73,9 @@ jobs:
           }
           if (version === '0.0-development') {
             throw new Error('release version must not be 0.0-development');
+          }
+          if (version.includes('-')) {
+            throw new Error('release version must be a stable semver version');
           }
 
           const packageNames = ['impersonated-fetch', ...platforms.map((platform) => platform.packageName)];
@@ -129,6 +132,12 @@ jobs:
           const packageJsonPath = 'packages/impersonated-fetch/package.json';
           const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
           packageJson.version = process.env.RELEASE_VERSION;
+          packageJson.optionalDependencies = Object.fromEntries(
+            Object.keys(packageJson.optionalDependencies).map((packageName) => [
+              packageName,
+              process.env.RELEASE_VERSION,
+            ]),
+          );
           writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
           JS
 
@@ -164,9 +173,4 @@ jobs:
 
       - name: Publish main package
         # Trusted publishing: no --provenance flag needed, automatically generated
-        run: |
-          MAIN_PACKAGE_TARBALL="$(
-            npm pack ./packages/impersonated-fetch --pack-destination "$RUNNER_TEMP" --json |
-              node --input-type=module -e "const chunks = []; for await (const chunk of process.stdin) chunks.push(chunk); const [pack] = JSON.parse(Buffer.concat(chunks).toString('utf8')); console.log(process.env.RUNNER_TEMP + '/' + pack.filename);"
-          )"
-          npm publish "$MAIN_PACKAGE_TARBALL" --access public
+        run: npm publish ./packages/impersonated-fetch --access public
