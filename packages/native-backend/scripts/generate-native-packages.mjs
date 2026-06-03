@@ -82,6 +82,10 @@ function packageJson(platform, version) {
     version,
     description: `Native backend binary for impersonated-fetch on ${platform.target}`,
     license: 'SEE LICENSE IN ../../LICENSE',
+    repository: {
+      type: 'git',
+      url: 'git+https://github.com/ConstasJ/impersonate-fetch.git',
+    },
     os: [platform.npmOS],
     cpu: [platform.npmCPU],
     files: [platform.assetName],
