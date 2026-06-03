@@ -74,15 +74,22 @@ describe('package contents', () => {
     assert.doesNotMatch(workflow, /MAIN_PACKAGE_TARBALL/);
   });
 
-  it('workflows omit optional dependencies during CI installs', () => {
+  it('workspace install ignores generated backend optional dependencies only', () => {
+    const workspace = readFileSync(resolve(root, '..', '..', 'pnpm-workspace.yaml'), 'utf8');
+
+    assert.match(workspace, /ignoredOptionalDependencies:/);
+    assert.match(workspace, /@impersonated-fetch\/backend-\*/);
+  });
+
+  it('workflows keep package manager optional dependencies during CI installs', () => {
     for (const workflowPath of [
       resolve(root, '..', '..', '.github', 'workflows', 'ci.yml'),
       resolve(root, '..', '..', '.github', 'workflows', 'native-backend.yml'),
       resolve(root, '..', '..', '.github', 'workflows', 'release.yml'),
     ]) {
       const workflow = readFileSync(workflowPath, 'utf8');
-      assert.doesNotMatch(workflow, /pnpm install --frozen-lockfile(?! --no-optional)/);
-      assert.match(workflow, /pnpm install --frozen-lockfile --no-optional/);
+      assert.match(workflow, /pnpm install --frozen-lockfile/);
+      assert.doesNotMatch(workflow, /pnpm install --frozen-lockfile --no-optional/);
     }
   });
 

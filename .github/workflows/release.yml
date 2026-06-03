@@ -56,7 +56,7 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install
-        run: pnpm install --frozen-lockfile --no-optional
+        run: pnpm install --frozen-lockfile
 
       - name: Validate release version and npm availability
         run: |
